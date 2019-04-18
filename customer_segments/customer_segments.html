@@ -15447,7 +15447,7 @@ Name: 154, dtype: int64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x2a13101c8d0&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1f7513808d0&gt;</pre>
 </div>
 
 </div>
@@ -15519,7 +15519,7 @@ Name: 154, dtype: int64</pre>
 <p>3) The cluster-center locations are updated by computing an unweighted average of the corresponding datapoints. This implies, any outliers assigned to a cluster can greatly affect the position of the cluster-center (they will tend to attract the cluster-centers towards thenself) and hence the cluster itself. This means, KMeans has a high degree of senstivity to the outliers in a dataset.</p>
 <p>3) The above facts also demonstrates that Kmeans is quite sensitive to rescaling of data, as such a rescaling will affect the geometrical shape of the clusters as well as the relative position of outliers in a cluster.</p>
 <p>4) The Kmeans algorithm is also sensitive to initialization and hence can at times fall in a local minima [1]. However, restarting the algortithm several times can somewhat overcome this problem. This also show that reruns of the algorithm can give slightly different results, thereby reducing the reliability of the results.</p>
-<p>5) The clusters found by Kmeans have aproximately the same size [9]. This might not always be the most optimal clustering for the dataset. This was can also be seen in the first section of the 'GMM clustering and cluster Validation lab' (lecture 21 of lesson 24, Udactity-mlnd-term 1), where a comparison of GMM and KMeans was was done.</p>
+<p>5) The clusters found by Kmeans have aproximately the same size [9]. This might not always be the most optimal clustering for the dataset. This can also be seen in the first section of the 'GMM clustering and cluster Validation lab' (lecture 21 of lesson 24, Udactity-mlnd-term 1), where a comparison of GMM and KMeans was was done.</p>
 <p>6) KMeans does a hard clustering, which assumes that the clusters have well defined non-overlapping boundary. This might not always be a good assumption specially in situations where a smaller cluster might be contained within a larger cluster, for example the case presented in the first section of the 'GMM clustering and cluster Validation lab'.</p>
 <p>7) The number of clusters, to be supplied by hand, might not always be obvious.</p>
 </li>
@@ -15529,7 +15529,7 @@ Name: 154, dtype: int64</pre>
 <li><p>Advantages</p>
 <p>1) Does not need the clusters to be spherical in shape and hence can easily detect elliptically shaped clusters.</p>
 <p>2) Distribution based clustering of the dataset implies that different clusters can have different sizes. This also allows Gaussian Mixture Model to find clusters within clusters, as was demonstrated in the first section of the 'GMM clustering and cluster Validation lab'.</p>
-<p>3) Soft clustering: A datapoint can be simultaneously a member of multiple different clusters. There are many applications where this can be very useful. One such example can be clustering movies into genres. Clearly, a movie can belong to multiple different genres and hence a hard clustering will not be as sensible/useful. Other cases implude, bioinformatics [10].</p>
+<p>3) Soft clustering: A datapoint can be simultaneously a member of multiple different clusters. There are many applications where this can be very useful. One such example can be clustering movies into genres. Clearly, a movie can belong to multiple different genres and hence a hard clustering will not be as sensible/useful. Other cases include, bioinformatics [10].</p>
 <p>4) The cluster centers are computed by taking a weighted mean of the datapoints, Gaussian Mixture models are therefore much more robust to outliers.</p>
 </li>
 </ul>
@@ -15648,6 +15648,42 @@ Name: 154, dtype: int64</pre>
 <div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pred</span><span class="o">=</span><span class="n">clusterer</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">reduced_data</span><span class="p">)</span>
+<span class="n">counts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+<span class="n">num_seg_0</span><span class="o">=</span><span class="n">counts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">num_seg_1</span><span class="o">=</span><span class="n">counts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot; number of data points in cluster 0: </span><span class="si">{}</span><span class="se">\n</span><span class="s2"> number of data points in cluster 1: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_seg_0</span><span class="p">,</span> <span class="n">num_seg_1</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> number of samples points in cluster 0: 141
+ number of samples points in cluster 1: 299
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># let us define a function that takes num_clusters and clustering algorithm as inputs and returns the silhouette score</span>
 
 <span class="k">def</span> <span class="nf">clusterer_eval</span><span class="p">(</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">clustering_algo</span><span class="p">):</span>
@@ -15670,7 +15706,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
@@ -15683,7 +15719,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -15703,7 +15739,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">score_kmeans</span><span class="o">=</span><span class="p">[]</span>
@@ -15734,7 +15770,7 @@ Name: 154, dtype: int64</pre>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Time taken to run KMeans: 4.13693380355835
+<pre>Time taken to run KMeans: 12.587331295013428
 </pre>
 </div>
 </div>
@@ -15745,7 +15781,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
@@ -15789,7 +15825,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">score_GMM</span><span class="o">=</span><span class="p">[]</span>
@@ -15820,7 +15856,7 @@ Name: 154, dtype: int64</pre>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Time take to run GMM: 10.158865928649902
+<pre>Time take to run GMM: 13.972553730010986
 </pre>
 </div>
 </div>
@@ -15831,7 +15867,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
@@ -15868,7 +15904,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
@@ -15884,7 +15920,7 @@ Name: 154, dtype: int64</pre>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[29]:</div>
+    <div class="prompt output_prompt">Out[30]:</div>
 
 
 
@@ -15901,7 +15937,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">GMM_performance</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;clusters&#39;</span><span class="p">:</span><span class="n">clusters</span><span class="p">,</span><span class="s1">&#39;silhouette_score&#39;</span><span class="p">:</span><span class="n">score_GMM</span><span class="p">})</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;clusters&#39;</span><span class="p">])</span>
@@ -15914,7 +15950,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tabulate</span> <span class="k">import</span> <span class="n">tabulate</span>
@@ -15927,7 +15963,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">GMM_performance</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;trial#&#39;</span><span class="p">,</span><span class="s1">&#39;clusters&#39;</span><span class="p">,</span><span class="s1">&#39;score&#39;</span><span class="p">]))</span>
@@ -16064,7 +16100,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># kde graph for &#39;Milk&#39;</span>
@@ -16102,7 +16138,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># kde graph for Grocery</span>
@@ -16140,7 +16176,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># kde graph for &#39;Detergents_Paper&#39;</span>
@@ -16186,7 +16222,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Display the results of the clustering from implementation</span>
@@ -16235,7 +16271,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Inverse transform the centers</span>
@@ -16325,7 +16361,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -16341,7 +16377,7 @@ Name: 154, dtype: int64</pre>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[38]:</div>
+    <div class="prompt output_prompt">Out[39]:</div>
 
 
 
@@ -16499,7 +16535,7 @@ Name: 154, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Display the predictions</span>
@@ -16577,8 +16613,24 @@ Sample point 2 predicted to be in Cluster 1
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
+<ul>
+<li>The A/B test methodology</li>
+</ul>
+<p>I think an A/B test can be designed in the following way:</p>
+<p>To begin with we will have to choose a randomly selected homogeneous sample of customers from each segment. I feel, choosing 200 customers from each segment will be a big enough sample, although the more the merrier. We can now divide the customers in each segment into two equal sets- we will call these the control group and the test group. Once again, to ensure homogeneity, we should make sure that customers are randomly selected to be either in the control group or in the test group.</p>
+<p>Thus, so far we have the following 4 categories of our sample customers: control group of segment-0, test group of segment-0, control group of segment-1, test group of segment-1. Each of these categories will consist of 100 customers.</p>
+<p>Now we provide a 5 day  per week delivery to the control group customers in each segment and record their total purchase across all product categories. This will thereby give us a distrution of the control group purchases of the respective customer-segments.</p>
+<p>Similarly, we provide a 3 day per week delivery service to the test group customers in each segment. Once again we record their total purchase across all product categories and obtain a distribution of the control group purchases.</p>
+<p>For each individual segment we now compare the average value of purchase by the test group customers in that segment to that of the control group customers in that segment. If the average purchase made by the test group is not significantly less than that that of the control group of the segment , then it is possible to switch to a 3 day per week delivery for that segment. Needless to say that switching to a 3 day per week delivery will definitely be a sensible thing to do in case the purchase of the test group actually increases rather than dropping.</p>
+<p>An important thing to keep in mind is to make sure if the difference in purchases of the test vs the control group is statistically significant or not. One way this can be done is through the <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov statistic</a>. One can use <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html">ks_2samp</a> function in scipy.stats to easily do this [1]. A switch to smaller number of delivery days should only be made if the total purchase of the test group is <em>not significantly less</em> than that of the control group.</p>
+<p>For a brief review of how to measure if two given distributions are statistically significant or not, one can look <a href="http://homework.uoregon.edu/pub/class/es202/ztest.html">here</a>, <a href="http://www.surgicalcriticalcare.net/Statistics/continuous.pdf">here</a>  and also <a href="http://www.statstutor.ac.uk/resources/uploaded/tutorsquickguidetostatistics.pdf">here</a>.</p>
+<ul>
+<li>Prediction on expected behaviour of the segments </li>
+</ul>
 <p>I think that customers whose purchases mostly consists of Milk, Grocery and Detergents_Paper will not be as affected by the change, most of these items can be stored for at least upto a week. Thus, I would assume that customers in segment-0 will have less reservations and has a higher chance of responding favourably to switching from 5 days to 3 days.</p>
 <p>On the otherhand, customers in segment-1 seem to spend a significant fraction on Fresh food. These customers are therefore less likely to respond positively to the reduced frequency of delivery service. Thus customers in segment-1 will probably not like the idea of switching from 5 days to 3 days.</p>
+<p><strong>References</strong></p>
+<p>1) <a href="https://stats.stackexchange.com/questions/354035/how-to-compare-the-data-distribution-of-2-datasets">https://stats.stackexchange.com/questions/354035/how-to-compare-the-data-distribution-of-2-datasets</a></p>
 
 </div>
 </div>
@@ -16616,7 +16668,7 @@ Sample point 2 predicted to be in Cluster 1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Display the clustering results based on &#39;Channel&#39; data</span>
