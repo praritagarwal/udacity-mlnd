@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>dog_app</title>
+<title>dog_app_V2</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -15276,7 +15276,7 @@ percentage of human faces in dog_files_short: 12%
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Question 2:</strong> This algorithmic choice necessitates that we communicate to the user that we accept human images only when they provide a clear view of a face (otherwise, we risk having unneccessarily frustrated users!). In your opinion, is this a reasonable expectation to pose on the user? If not, can you think of a way to detect humans in images that does not necessitate an image with a clearly presented face?</p>
-<p><strong>Answer:</strong> I don't think it is always possible to obtain images which present a clear view of the face. Therefore it is not a very reasonable expectation to pose on the user. Therefore, rather than using an algorithm that solely relies on analysing facial features to detect humans, it might be better to use something that also looks at other anatomical aspects of the human body to determine if there is a human or not. Some examples of such algorithms have been discussed in <a href="https://medium.com/@madhawavidanapathirana/real-time-human-detection-in-computer-vision-part-2-c7eda27115c6">this</a> bog post.</p>
+<p><strong>Answer:</strong> I don't think it is always possible to obtain images which presents a clear view of the face. Therefore it is not a very reasonable expectation to pose on the user. The idea behind a Haar cascade face detection is described <a href="http://www.willberger.org/cascade-haar-explained/">here</a>. Given the latest advances in machine learning, it is perhaps better to use deep learning methodologies such as a convolutional neural network based model to detect human faces. One such algorithm, called Multi-task Cascaded Convolutional Network is described in <a href="https://arxiv.org/ftp/arxiv/papers/1604/1604.02878.pdf">this paper</a>. The fact that it performs better than Haar cascades is also demostrated in <a href="https://blog.datawow.io/face-detection-haar-cascade-vs-mtcnn-13af4aa180e6">this post</a>. Similarly, one can also use pretrained weights from VGG-Face and apply transfer learning to detect faces, as described <a href="https://www.dlology.com/blog/live-face-identification-with-pre-trained-vggface2-model/">here</a>.</p>
 
 </div>
 </div>
@@ -15593,9 +15593,9 @@ percentage of images in dog_files_short having dogs: 100%
 
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 6680/6680 [00:58&lt;00:00, 113.63it/s]
-100%|██████████| 835/835 [00:06&lt;00:00, 119.40it/s]
-100%|██████████| 836/836 [00:06&lt;00:00, 120.34it/s]
+<pre>100%|██████████| 6680/6680 [00:58&lt;00:00, 113.56it/s]
+100%|██████████| 835/835 [00:06&lt;00:00, 121.91it/s]
+100%|██████████| 836/836 [00:07&lt;00:00, 132.56it/s]
 </pre>
 </div>
 </div>
@@ -15628,7 +15628,9 @@ percentage of images in dog_files_short having dogs: 100%
 <th>padding</th>
 <th>Global Avg. <br>Pooling</th>
 <th>DNN</th>
+<th>dropout <br> rate</th>
 <th># of epochs</th>
+<th>test <br> accuracy</th>
 </tr>
 </thead>
 <tbody>
@@ -15636,14 +15638,16 @@ percentage of images in dog_files_short having dogs: 100%
 <td>3</td>
 <td>8 -&gt; 16 -&gt; 32</td>
 <td>(3,3)</td>
-<td>'glorot_normal'</td>
+<td>'glorot_uniform'</td>
 <td>(2,2)</td>
 <td>'same'</td>
 <td>(2,2)</td>
 <td>'same'</td>
 <td>False</td>
 <td>1 hidden layer <br> with 150 neurons</td>
+<td>0.255</td>
 <td>30</td>
+<td>13.64%</td>
 </tr>
 </tbody>
 </table>
@@ -15654,31 +15658,31 @@ percentage of images in dog_files_short having dogs: 100%
 </li>
 <li><p>Since it can take quite a large time for some of the models to run, its better for initial analysis to run each model for only 5 epochs and compare their performance. Then run the best model for a larger number of epochs if the need arises.</p>
 </li>
-<li><p>Almost all my model consisted of 3 convolutional layers (interlaced with MaxPooling layers). Different models were obtained from varying the number of filters and their kernel size and strides. The output from the final convolutional layer was then fed to a Dense Neural Network with 1 hidden layer. Again, I tried to experiment a little by changing the number of neurons in the hidden layer.</p>
+<li><p>Almost all my model consisted of 3 convolutional layers (interlaced with MaxPooling layers). Different models were obtained from varying the number of filters and their kernel size and strides. The output from the final convolutional layer was then fed to a Dense Neural Network with 1 hidden layer with a dropout of 0.2. Again, I tried to experiment a little by changing the number of neurons in the hidden layer.</p>
 </li>
-<li><p>The first model I tried consisted of consisted of 3 convolutional layers with 16, 64 and 256 filters respectively. The kernel size for each filter was (3,3) with strides of 1. Each convulutional layer was followed by MaxPool layer with pool_size = (2,2) (strides in the Maxpool layers being equal to pool_size). I flattened  the final output and fed it into a DNN with one hidden layer of 50 neurons. This amounted to ~ 8.8 million weights in the model. This model took about 15s/epoch and resulted in about  7..54% test accuracy. Meanwhile the accuracy on the training set became ~29.51% after the 5th epoch. This showed that this was an overly complicated model with extreme overfitting. I therefore tried to come up with a simpler model.</p>
+<li><p>The first model I tried consisted of consisted of 3 convolutional layers with 16, 64 and 256 filters respectively. The kernel size for each filter was (3,3) with strides of 1. Each convulutional layer was followed by MaxPool layer with pool_size = (2,2) (strides in the Maxpool layers being equal to pool_size). I flattened  the final output and fed it into a DNN with one hidden layer of 50 neurons. This amounted to ~ 8.8 million weights in the model. This model took about 15s/epoch and resulted in about  5.86% test accuracy. Meanwhile the accuracy on the training set became ~10.13% after the 5th epoch. This showed that this was an overly complicated model with large overfitting. I therefore tried to come up with a simpler model.</p>
 </li>
 <li><p>In the above model, I noticed that most of the the weights arose due to the large number of features that are produced from feeding the flattened output of the convolutional layers into the hidden layer. This number will certainly get reduced if instead of flattening the output of the convolutional layers, I apply a global averaging pool and then feed it into the DNN. This gave me my 2nd model, with ~ 177 thousand trainable weights.</p>
 </li>
-<li><p>This 2nd model produces an accuracy of ~3.59% on the test set in 5 epochs. This crosses the required accuracy for the test but  the network looked overly complicated for such a relatively low accuracy. So, I wanted to try a simpler model which might also run faster. To do this I reduced the number of filters in the convolutional layers.</p>
+<li><p>This 2nd model produces an accuracy of ~3.11% on the test set in 5 epochs. This crosses the required accuracy for the test but  the network looked overly complicated for such a relatively low accuracy. So, I wanted to try a simpler model which might also run faster. To do this I reduced the number of filters in the convolutional layers.</p>
 </li>
 <li><p>My 3rd model consisted of 3 convolutional layers with 4, 8 and 16 filters respectively. The kernel size in all these filters was fixed at (3,3) with strides having a size 2. Each covolutional layer was followed by a MaxPooling layer with a kernel size (as well as strides) being (2,2). The final output was passed through a Global averaging layer, and then fed into a DNN with a single hidden layer of 50 neurons. This model had ~ 9,209 trainable weights.</p>
 </li>
-<li><p>This model ran much much faster than model 1 and 2,  taking about 4s per epoch. Meanwhile the accuracy reduced to about 2.08% from 3.8% on the previous model. I now tried to increase the complexity of the model a bit in hopes of getting better accuracy. I therefore increased the number of neurons in the hidden layer of the DNN to 150. This became my 4th model.</p>
+<li><p>This model ran much much faster than model 1 and 2,  taking about 4s per epoch. Meanwhile the accuracy only changed slightly  rising to 3.35% from 3.11% on the previous model. I now tried to increase the complexity of the model a bit in hopes of getting better accuracy. I therefore increased the number of neurons in the hidden layer of the DNN to 150. This became my 4th model.</p>
 </li>
 <li><p>For model 4, neither the timing nor the accuracy changed too significantly when compared to model 3. I therefore made the model  more complicated by flattening the output of the convolutional layers rather than applying a global average pooling.  This became my model 5.</p>
 </li>
-<li><p>I obtained a test accuracy of 4.67% on model 5,  which is much better than the accuracy in our model 3 &amp; 4, meanwhile the time taken by this code is still only 4s per epoch.  I now wanted to see how will things change if I change the kernel initializer from its default 'glorot_uniform' to 'glorot_normal'. This became my model 6.</p>
+<li><p>I obtained a test accuracy of 5.74% on model 5,  which is much better than the accuracy in our model 3 &amp; 4, meanwhile the time taken by this code is still only 4s per epoch.  I now wanted to see how will things change if I change the kernel initializer from its default 'glorot_uniform' to 'glorot_normal'. This became my model 6.</p>
 </li>
-<li><p>The accuracy of the model changed a lot upon using 'glorot_normal' for kernel initializer as compared to when we used the default 'glorot_uniform' initializer; It became 6.57% when compared to 4.67% with 'glorot_uniform' . So, let us just stick to 'glorot_normal' as our kernel initializer from now on. Let us try a little more complicated architechture by increasing the number of filters in the convolutional layers. (It's better to make the CNN more complicated than the DNN, since CNNs perform a much better task at identifying images.).  This becomes model 7.</p>
+<li><p>The accuracy of the model dropped slightly upon using 'glorot_normal' for kernel initializer as compared to when we used the default 'glorot_uniform' initializer; It became 5.62% when compared to 5.74% with 'glorot_uniform' . So, let us just stick to 'glorot_uniform' as our kernel initializer from now on. Let us try a little more complicated architechture by increasing the number of filters in the convolutional layers. (It's better to make the CNN more complicated than the DNN, since CNNs perform a much better task at identifying images.).  This becomes model 7.</p>
 </li>
-<li><p>My model 7 consisted of 3 convolutional layers having 8, 16 and 32 filters respectively. The kernel size was kept at (3,3) with strides of 2 and 'glorot_normal' as the kernel initializer. Each conbolutional layer was followed by a MaxPooling layer that with the pool_size (and strides) being (2,2). The output from the final convolutional layer was flattened and then fed into a DNN with a single hidden layer having 150 neurons.</p>
+<li><p>My model 7 consisted of 3 convolutional layers having 8, 16 and 32 filters respectively. The kernel size was kept at (3,3) with strides of 2 and 'glorot_uniform' as the kernel initializer. Each conbolutional layer was followed by a MaxPooling layer that with the pool_size (and strides) being (2,2). The output from the final convolutional layer was flattened and then fed into a DNN with a single hidden layer having 150 neurons.</p>
 </li>
-<li><p>After 5 epochs, this produced a test set accuracy of 8.49% while taking a mere 4s per epoch. This model sounds really promising!</p>
+<li><p>After 5 epochs, this produced a test set accuracy of 8.01% while taking a mere 4s per epoch. This model sounds really promising!</p>
 </li>
 <li><p>I also tried some other models by increasing the filter size as well as the number of filters. This gave me my models 8 and 9. In another model, I also tried having 4 convolutional layers in stead of 3, however, none of these performed better than model 7.</p>
 </li>
-<li><p>Thus I chose model 7 as my final choice and trained it for 30 epochs on augmented data, which gave me a test set accuracy of 11.84%. The time taken was 56s per epoch upon using augumented data ( and about 4s per epoch without augmented data)</p>
+<li><p>Thus I chose model 7 as my final choice. I applied a RandonSearchCV to this to find the best possible value for dropout rate and foud that 0.255 is preferable. With this dropout rate, I trained it for 30 epochs on augmented data, which gave me a test set accuracy of 13.63%. The time taken was 56s per epoch upon using augumented data ( and about 4s per epoch without augmented data)</p>
 </li>
 <li><p>Compared to this Udacity's suggested model was only able to achieve a test accuracy of 5.67% after 20 epochs, taking about 7s per epoch without augmented data. Clearly, our model is better than Udacities model.</p>
 </li>
@@ -15779,8 +15783,9 @@ percentage of images in dog_files_short having dogs: 100%
    <span class="c1"># pool_size: the pool_size for the MaxPooling2D layer</span>
    <span class="c1"># n_filters_lis: array containing the number of filters in the succesive convolutional layers</span>
    <span class="c1"># n_Dense_hidden: number of neurons in the hidden layer. If 0, then don&#39;t add the hidden layer </span>
+   <span class="c1"># dropout_rate: the dropout rate to be used when applying dropout to the hidden layer in the DNN</span>
    <span class="c1"># GlAvgPool: whether or not to use a GlobalAveragePooling layer; default = False</span>
-<span class="k">def</span> <span class="nf">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">strd</span><span class="p">,</span> <span class="n">pool_size</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="p">,</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">strd</span><span class="p">,</span> <span class="n">pool_size</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     
     <span class="n">K</span><span class="o">.</span><span class="n">clear_session</span><span class="p">()</span>
     <span class="n">my_model</span><span class="o">=</span><span class="n">Sequential</span><span class="p">()</span>
@@ -15800,6 +15805,7 @@ percentage of images in dog_files_short having dogs: 100%
         
     <span class="k">if</span> <span class="n">n_Dense_hidden</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
         <span class="n">my_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">n_Dense_hidden</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="n">my_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout_rate</span><span class="p">))</span>
         
     <span class="n">my_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dog_names</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
     
@@ -15858,7 +15864,7 @@ percentage of images in dog_files_short having dogs: 100%
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2><font color = green> Final Choice of Model: Model 7  with augmented data, runing for 30 epochs</font></h2>
+<h2><font color = green> Final Choice of Model: Model 10  with augmented data , runing for 30 epochs</font></h2>
 
 </div>
 </div>
@@ -15868,7 +15874,7 @@ percentage of images in dog_files_short having dogs: 100%
 <div class="prompt input_prompt">In&nbsp;[0]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.255</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 
@@ -15904,6 +15910,8 @@ _________________________________________________________________
 flatten_1 (Flatten)          (None, 288)               0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               43350     
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
@@ -16000,129 +16008,126 @@ _________________________________________________________________
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
-Instructions for updating:
-Use tf.cast instead.
-Epoch 1/30
- - 55s - loss: 4.8646 - acc: 0.0106 - val_loss: 4.8074 - val_acc: 0.0144
+<pre>Epoch 1/30
+ - 57s - loss: 4.8813 - acc: 0.0118 - val_loss: 4.8430 - val_acc: 0.0108
 
-Epoch 00001: val_loss improved from inf to 4.80741, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.84296, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/30
- - 56s - loss: 4.6708 - acc: 0.0251 - val_loss: 4.5869 - val_acc: 0.0311
+ - 56s - loss: 4.7486 - acc: 0.0246 - val_loss: 4.5950 - val_acc: 0.0299
 
-Epoch 00002: val_loss improved from 4.80741 to 4.58693, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.84296 to 4.59496, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/30
- - 56s - loss: 4.5425 - acc: 0.0361 - val_loss: 4.4785 - val_acc: 0.0395
+ - 57s - loss: 4.5201 - acc: 0.0362 - val_loss: 4.4447 - val_acc: 0.0347
 
-Epoch 00003: val_loss improved from 4.58693 to 4.47850, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.59496 to 4.44471, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/30
- - 54s - loss: 4.4133 - acc: 0.0451 - val_loss: 4.3907 - val_acc: 0.0515
+ - 57s - loss: 4.4046 - acc: 0.0443 - val_loss: 4.3672 - val_acc: 0.0503
 
-Epoch 00004: val_loss improved from 4.47850 to 4.39070, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.44471 to 4.36724, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/30
- - 58s - loss: 4.3271 - acc: 0.0521 - val_loss: 4.3258 - val_acc: 0.0539
+ - 55s - loss: 4.3322 - acc: 0.0439 - val_loss: 4.2810 - val_acc: 0.0551
 
-Epoch 00005: val_loss improved from 4.39070 to 4.32583, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.36724 to 4.28104, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 6/30
- - 56s - loss: 4.2528 - acc: 0.0629 - val_loss: 4.2492 - val_acc: 0.0527
+ - 57s - loss: 4.2654 - acc: 0.0560 - val_loss: 4.3080 - val_acc: 0.0575
 
-Epoch 00006: val_loss improved from 4.32583 to 4.24917, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00006: val_loss did not improve from 4.28104
 Epoch 7/30
- - 55s - loss: 4.1926 - acc: 0.0614 - val_loss: 4.1973 - val_acc: 0.0790
+ - 57s - loss: 4.2266 - acc: 0.0576 - val_loss: 4.2334 - val_acc: 0.0623
 
-Epoch 00007: val_loss improved from 4.24917 to 4.19726, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00007: val_loss improved from 4.28104 to 4.23338, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 8/30
- - 56s - loss: 4.1169 - acc: 0.0765 - val_loss: 4.1558 - val_acc: 0.0683
+ - 55s - loss: 4.1737 - acc: 0.0609 - val_loss: 4.2581 - val_acc: 0.0647
 
-Epoch 00008: val_loss improved from 4.19726 to 4.15576, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00008: val_loss did not improve from 4.23338
 Epoch 9/30
- - 56s - loss: 4.0675 - acc: 0.0783 - val_loss: 4.1339 - val_acc: 0.0838
+ - 56s - loss: 4.1256 - acc: 0.0695 - val_loss: 4.1583 - val_acc: 0.0599
 
-Epoch 00009: val_loss improved from 4.15576 to 4.13386, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00009: val_loss improved from 4.23338 to 4.15830, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 10/30
- - 54s - loss: 4.0052 - acc: 0.0891 - val_loss: 4.0982 - val_acc: 0.0862
+ - 56s - loss: 4.0850 - acc: 0.0763 - val_loss: 4.0886 - val_acc: 0.0647
 
-Epoch 00010: val_loss improved from 4.13386 to 4.09815, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00010: val_loss improved from 4.15830 to 4.08857, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 11/30
- - 57s - loss: 3.9633 - acc: 0.0925 - val_loss: 4.0308 - val_acc: 0.0874
+ - 58s - loss: 4.0338 - acc: 0.0784 - val_loss: 4.1129 - val_acc: 0.0743
 
-Epoch 00011: val_loss improved from 4.09815 to 4.03082, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00011: val_loss did not improve from 4.08857
 Epoch 12/30
- - 56s - loss: 3.9135 - acc: 0.0994 - val_loss: 4.2693 - val_acc: 0.0635
+ - 57s - loss: 3.9988 - acc: 0.0828 - val_loss: 4.0600 - val_acc: 0.0838
 
-Epoch 00012: val_loss did not improve from 4.03082
+Epoch 00012: val_loss improved from 4.08857 to 4.06000, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 13/30
- - 56s - loss: 3.8834 - acc: 0.1087 - val_loss: 4.0251 - val_acc: 0.0802
+ - 57s - loss: 3.9725 - acc: 0.0859 - val_loss: 4.0102 - val_acc: 0.0922
 
-Epoch 00013: val_loss improved from 4.03082 to 4.02509, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00013: val_loss improved from 4.06000 to 4.01019, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 14/30
- - 54s - loss: 3.8293 - acc: 0.1106 - val_loss: 4.0198 - val_acc: 0.0874
+ - 57s - loss: 3.9278 - acc: 0.0924 - val_loss: 3.9712 - val_acc: 0.0898
 
-Epoch 00014: val_loss improved from 4.02509 to 4.01979, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00014: val_loss improved from 4.01019 to 3.97121, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 15/30
- - 56s - loss: 3.7827 - acc: 0.1180 - val_loss: 4.2369 - val_acc: 0.0671
+ - 55s - loss: 3.9147 - acc: 0.1009 - val_loss: 3.9607 - val_acc: 0.0898
 
-Epoch 00015: val_loss did not improve from 4.01979
+Epoch 00015: val_loss improved from 3.97121 to 3.96067, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 16/30
- - 57s - loss: 3.7636 - acc: 0.1220 - val_loss: 3.9892 - val_acc: 0.0850
+ - 57s - loss: 3.8907 - acc: 0.0922 - val_loss: 3.9998 - val_acc: 0.0838
 
-Epoch 00016: val_loss improved from 4.01979 to 3.98919, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00016: val_loss did not improve from 3.96067
 Epoch 17/30
- - 54s - loss: 3.7355 - acc: 0.1243 - val_loss: 4.1251 - val_acc: 0.0922
+ - 59s - loss: 3.8594 - acc: 0.1016 - val_loss: 3.9128 - val_acc: 0.1006
 
-Epoch 00017: val_loss did not improve from 3.98919
+Epoch 00017: val_loss improved from 3.96067 to 3.91276, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 18/30
- - 56s - loss: 3.6975 - acc: 0.1323 - val_loss: 3.8945 - val_acc: 0.1090
+ - 55s - loss: 3.8433 - acc: 0.1042 - val_loss: 3.8806 - val_acc: 0.0898
 
-Epoch 00018: val_loss improved from 3.98919 to 3.89446, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00018: val_loss improved from 3.91276 to 3.88062, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 19/30
- - 56s - loss: 3.6683 - acc: 0.1322 - val_loss: 3.9571 - val_acc: 0.1042
+ - 56s - loss: 3.8157 - acc: 0.1141 - val_loss: 3.8851 - val_acc: 0.0982
 
-Epoch 00019: val_loss did not improve from 3.89446
+Epoch 00019: val_loss did not improve from 3.88062
 Epoch 20/30
- - 54s - loss: 3.6522 - acc: 0.1376 - val_loss: 4.0417 - val_acc: 0.0958
+ - 57s - loss: 3.8046 - acc: 0.1111 - val_loss: 3.9137 - val_acc: 0.0814
 
-Epoch 00020: val_loss did not improve from 3.89446
+Epoch 00020: val_loss did not improve from 3.88062
 Epoch 21/30
- - 56s - loss: 3.6269 - acc: 0.1406 - val_loss: 3.9012 - val_acc: 0.1222
+ - 57s - loss: 3.7850 - acc: 0.1178 - val_loss: 3.8910 - val_acc: 0.1006
 
-Epoch 00021: val_loss did not improve from 3.89446
+Epoch 00021: val_loss did not improve from 3.88062
 Epoch 22/30
- - 57s - loss: 3.5884 - acc: 0.1458 - val_loss: 3.8778 - val_acc: 0.1198
+ - 57s - loss: 3.7602 - acc: 0.1183 - val_loss: 4.0636 - val_acc: 0.0814
 
-Epoch 00022: val_loss improved from 3.89446 to 3.87781, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00022: val_loss did not improve from 3.88062
 Epoch 23/30
- - 55s - loss: 3.5751 - acc: 0.1525 - val_loss: 3.8511 - val_acc: 0.1293
+ - 57s - loss: 3.7511 - acc: 0.1202 - val_loss: 3.8780 - val_acc: 0.1018
 
-Epoch 00023: val_loss improved from 3.87781 to 3.85115, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00023: val_loss improved from 3.88062 to 3.87799, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 24/30
- - 55s - loss: 3.5587 - acc: 0.1475 - val_loss: 3.8334 - val_acc: 0.1317
+ - 57s - loss: 3.7233 - acc: 0.1207 - val_loss: 3.9757 - val_acc: 0.0802
 
-Epoch 00024: val_loss improved from 3.85115 to 3.83342, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00024: val_loss did not improve from 3.87799
 Epoch 25/30
- - 56s - loss: 3.5291 - acc: 0.1594 - val_loss: 3.8156 - val_acc: 0.1329
+ - 55s - loss: 3.7155 - acc: 0.1263 - val_loss: 3.8446 - val_acc: 0.1078
 
-Epoch 00025: val_loss improved from 3.83342 to 3.81559, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00025: val_loss improved from 3.87799 to 3.84460, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 26/30
- - 55s - loss: 3.5184 - acc: 0.1555 - val_loss: 3.7742 - val_acc: 0.1329
+ - 57s - loss: 3.7098 - acc: 0.1301 - val_loss: 3.8394 - val_acc: 0.1198
 
-Epoch 00026: val_loss improved from 3.81559 to 3.77418, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00026: val_loss improved from 3.84460 to 3.83943, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 27/30
- - 56s - loss: 3.4992 - acc: 0.1603 - val_loss: 3.7677 - val_acc: 0.1234
+ - 57s - loss: 3.7019 - acc: 0.1241 - val_loss: 3.9000 - val_acc: 0.0994
 
-Epoch 00027: val_loss improved from 3.77418 to 3.76766, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00027: val_loss did not improve from 3.83943
 Epoch 28/30
- - 56s - loss: 3.4758 - acc: 0.1638 - val_loss: 3.8804 - val_acc: 0.1138
+ - 59s - loss: 3.6972 - acc: 0.1325 - val_loss: 3.8505 - val_acc: 0.1042
 
-Epoch 00028: val_loss did not improve from 3.76766
+Epoch 00028: val_loss did not improve from 3.83943
 Epoch 29/30
- - 56s - loss: 3.4632 - acc: 0.1698 - val_loss: 3.8404 - val_acc: 0.1150
+ - 56s - loss: 3.6426 - acc: 0.1335 - val_loss: 3.8827 - val_acc: 0.1126
 
-Epoch 00029: val_loss did not improve from 3.76766
+Epoch 00029: val_loss did not improve from 3.83943
 Epoch 30/30
- - 54s - loss: 3.4409 - acc: 0.1725 - val_loss: 3.7959 - val_acc: 0.1377
+ - 57s - loss: 3.6658 - acc: 0.1365 - val_loss: 3.8003 - val_acc: 0.1281
 
-Epoch 00030: val_loss did not improve from 3.76766
+Epoch 00030: val_loss improved from 3.83943 to 3.80029, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -16135,7 +16140,7 @@ Epoch 00030: val_loss did not improve from 3.76766
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f461d2f5c50&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fd7734a2780&gt;</pre>
 </div>
 
 </div>
@@ -16199,7 +16204,7 @@ Epoch 00030: val_loss did not improve from 3.76766
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 11.8421%
+<pre>Test accuracy: 13.6364%
 </pre>
 </div>
 </div>
@@ -16211,7 +16216,7 @@ Epoch 00030: val_loss did not improve from 3.76766
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>The  test accuracy on this final model was: 11.84%</strong></p>
+<p><strong>The  test accuracy on this final model was: 13.64%</strong></p>
 
 </div>
 </div>
@@ -16219,7 +16224,7 @@ Epoch 00030: val_loss did not improve from 3.76766
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2><font color=green>Model 1 (had extreme overfitting)</font></h2>
+<h2><font color=green>Model 1 (had large overfitting)</font></h2>
 <p><strong>This model caused the GPU to crash and could not run for even a single epoch, so I did not run this section of the code in subsequent re-runs.</strong></p>
 
 </div>
@@ -16249,7 +16254,10 @@ Epoch 00030: val_loss did not improve from 3.76766
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>_________________________________________________________________
+<pre>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:3445: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+_________________________________________________________________
 Layer (type)                 Output Shape              Param #   
 =================================================================
 conv2d_1 (Conv2D)            (None, 222, 222, 16)      448       
@@ -16267,6 +16275,8 @@ _________________________________________________________________
 flatten_1 (Flatten)          (None, 173056)            0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 50)                8652850   
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 50)                0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               6783      
 =================================================================
@@ -16352,27 +16362,30 @@ _________________________________________________________________
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Train on 6680 samples, validate on 835 samples
+<pre>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 15s - loss: 4.8919 - acc: 0.0144 - val_loss: 4.7184 - val_acc: 0.0287
+ - 20s - loss: 4.9094 - acc: 0.0081 - val_loss: 4.8218 - val_acc: 0.0108
 
-Epoch 00001: val_loss improved from inf to 4.71837, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.82176, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 14s - loss: 4.5251 - acc: 0.0445 - val_loss: 4.4339 - val_acc: 0.0539
+ - 14s - loss: 4.7428 - acc: 0.0246 - val_loss: 4.5836 - val_acc: 0.0443
 
-Epoch 00002: val_loss improved from 4.71837 to 4.43391, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.82176 to 4.58359, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 14s - loss: 4.1519 - acc: 0.0734 - val_loss: 4.2432 - val_acc: 0.0659
+ - 14s - loss: 4.4823 - acc: 0.0458 - val_loss: 4.3315 - val_acc: 0.0683
 
-Epoch 00003: val_loss improved from 4.43391 to 4.24318, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.58359 to 4.33149, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 14s - loss: 3.6263 - acc: 0.1540 - val_loss: 4.2795 - val_acc: 0.0814
+ - 14s - loss: 4.2077 - acc: 0.0692 - val_loss: 4.2610 - val_acc: 0.0754
 
-Epoch 00004: val_loss did not improve from 4.24318
+Epoch 00004: val_loss improved from 4.33149 to 4.26101, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 14s - loss: 2.8381 - acc: 0.2951 - val_loss: 4.7561 - val_acc: 0.0778
+ - 14s - loss: 3.9177 - acc: 0.1013 - val_loss: 4.2474 - val_acc: 0.0659
 
-Epoch 00005: val_loss did not improve from 4.24318
+Epoch 00005: val_loss improved from 4.26101 to 4.24737, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -16385,7 +16398,7 @@ Epoch 00005: val_loss did not improve from 4.24318
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f7171d70470&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fef4b9662b0&gt;</pre>
 </div>
 
 </div>
@@ -16449,7 +16462,7 @@ Epoch 00005: val_loss did not improve from 4.24318
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 7.5359%
+<pre>Test accuracy: 5.8612%
 </pre>
 </div>
 </div>
@@ -16457,6 +16470,14 @@ Epoch 00005: val_loss did not improve from 4.24318
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>This had a test accuracy of abokut 5.8% while the accuracy on training set was about 10.13%. Considering the enormity of the number ofweights being trained and hence the large complexity of the model, this is quite a low accuracy. The difference between the training and the test set accuracy is also high, indicating large overfitting. Let us reduce the complecxity of the model.</strong></p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -16508,6 +16529,8 @@ _________________________________________________________________
 global_average_pooling2d_1 ( (None, 256)               0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 50)                12850     
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 50)                0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               6783      
 =================================================================
@@ -16587,25 +16610,25 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 12s - loss: 4.8859 - acc: 0.0069 - val_loss: 4.8739 - val_acc: 0.0096
+ - 12s - loss: 4.8864 - acc: 0.0085 - val_loss: 4.8735 - val_acc: 0.0108
 
-Epoch 00001: val_loss improved from inf to 4.87385, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.87351, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 12s - loss: 4.8675 - acc: 0.0135 - val_loss: 4.8446 - val_acc: 0.0156
+ - 12s - loss: 4.8466 - acc: 0.0133 - val_loss: 4.8013 - val_acc: 0.0168
 
-Epoch 00002: val_loss improved from 4.87385 to 4.84459, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.87351 to 4.80131, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 12s - loss: 4.7998 - acc: 0.0244 - val_loss: 4.7656 - val_acc: 0.0216
+ - 12s - loss: 4.7779 - acc: 0.0159 - val_loss: 4.7496 - val_acc: 0.0192
 
-Epoch 00003: val_loss improved from 4.84459 to 4.76563, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.80131 to 4.74959, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 12s - loss: 4.7130 - acc: 0.0266 - val_loss: 4.7296 - val_acc: 0.0263
+ - 12s - loss: 4.7125 - acc: 0.0222 - val_loss: 4.7237 - val_acc: 0.0180
 
-Epoch 00004: val_loss improved from 4.76563 to 4.72965, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.74959 to 4.72371, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 12s - loss: 4.6383 - acc: 0.0275 - val_loss: 4.6378 - val_acc: 0.0347
+ - 12s - loss: 4.6723 - acc: 0.0237 - val_loss: 4.6644 - val_acc: 0.0311
 
-Epoch 00005: val_loss improved from 4.72965 to 4.63777, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.72371 to 4.66436, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -16618,7 +16641,7 @@ Epoch 00005: val_loss improved from 4.72965 to 4.63777, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f716e8f04a8&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fef4c467208&gt;</pre>
 </div>
 
 </div>
@@ -16682,7 +16705,7 @@ Epoch 00005: val_loss improved from 4.72965 to 4.63777, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 3.5885%
+<pre>Test accuracy: 3.1100%
 </pre>
 </div>
 </div>
@@ -16694,7 +16717,7 @@ Epoch 00005: val_loss improved from 4.72965 to 4.63777, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>This produces an accuracy of ~3.59% on the test set in 5 epochs. This crosses the required accuracy for the test but the the code took 83 sec per epoch. Let's try a simpler model which might run faster.</strong></p>
+<p><strong>This produces an accuracy of ~3.11% on the test set in 5 epochs. This crosses the required accuracy for the test but the the code took 83 sec per epoch. Let's try a simpler model which might run faster.</strong></p>
 
 </div>
 </div>
@@ -16749,6 +16772,8 @@ _________________________________________________________________
 global_average_pooling2d_1 ( (None, 16)                0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 50)                850       
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 50)                0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               6783      
 =================================================================
@@ -16825,30 +16850,27 @@ _________________________________________________________________
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
-Instructions for updating:
-Use tf.cast instead.
-Train on 6680 samples, validate on 835 samples
+<pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 5s - loss: 4.8834 - acc: 0.0075 - val_loss: 4.8689 - val_acc: 0.0108
+ - 5s - loss: 4.8840 - acc: 0.0079 - val_loss: 4.8670 - val_acc: 0.0096
 
-Epoch 00001: val_loss improved from inf to 4.86892, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.86702, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 4s - loss: 4.8629 - acc: 0.0117 - val_loss: 4.8502 - val_acc: 0.0168
+ - 4s - loss: 4.8562 - acc: 0.0144 - val_loss: 4.8270 - val_acc: 0.0168
 
-Epoch 00002: val_loss improved from 4.86892 to 4.85023, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.86702 to 4.82703, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 4s - loss: 4.8270 - acc: 0.0163 - val_loss: 4.8009 - val_acc: 0.0144
+ - 4s - loss: 4.7927 - acc: 0.0202 - val_loss: 4.7645 - val_acc: 0.0192
 
-Epoch 00003: val_loss improved from 4.85023 to 4.80086, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.82703 to 4.76446, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 4s - loss: 4.7747 - acc: 0.0178 - val_loss: 4.7603 - val_acc: 0.0156
+ - 4s - loss: 4.7424 - acc: 0.0207 - val_loss: 4.7680 - val_acc: 0.0204
 
-Epoch 00004: val_loss improved from 4.80086 to 4.76032, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss did not improve from 4.76446
 Epoch 5/5
- - 4s - loss: 4.7414 - acc: 0.0186 - val_loss: 4.7551 - val_acc: 0.0204
+ - 4s - loss: 4.6965 - acc: 0.0214 - val_loss: 4.6895 - val_acc: 0.0204
 
-Epoch 00005: val_loss improved from 4.76032 to 4.75507, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.76446 to 4.68954, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -16861,7 +16883,7 @@ Epoch 00005: val_loss improved from 4.76032 to 4.75507, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f74e2aa9a20&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fef2e71b0f0&gt;</pre>
 </div>
 
 </div>
@@ -16925,7 +16947,7 @@ Epoch 00005: val_loss improved from 4.76032 to 4.75507, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 2.0335%
+<pre>Test accuracy: 3.3493%
 </pre>
 </div>
 </div>
@@ -16937,7 +16959,7 @@ Epoch 00005: val_loss improved from 4.76032 to 4.75507, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>This model ran significantly faster than model 1 &amp; 2, taking about 4s per epoch. Meanwhile the accuracy only reduced  to ~2.01% from 3.8% on the previous model. Let's try to increase the complexity of the model a bit in hopes of getting better accuracy. Let's increase the number of neurons in the hidden layer of the DNN to 150</strong></p>
+<p><strong>This model ran significantly faster than model 1 &amp; 2, taking about 4s per epoch. Meanwhile the accuracy increased just slightly  to ~3.35% from 3.11% on the previous model. Let's try to increase the complexity of the model a bit in hopes of getting better accuracy. Let's increase the number of neurons in the hidden layer of the DNN to 150</strong></p>
 
 </div>
 </div>
@@ -16992,6 +17014,8 @@ _________________________________________________________________
 global_average_pooling2d_1 ( (None, 16)                0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               2550      
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
@@ -17070,25 +17094,25 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 4s - loss: 4.8830 - acc: 0.0096 - val_loss: 4.8646 - val_acc: 0.0108
+ - 4s - loss: 4.8836 - acc: 0.0097 - val_loss: 4.8712 - val_acc: 0.0096
 
-Epoch 00001: val_loss improved from inf to 4.86456, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.87119, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 4s - loss: 4.8412 - acc: 0.0144 - val_loss: 4.8066 - val_acc: 0.0180
+ - 4s - loss: 4.8689 - acc: 0.0093 - val_loss: 4.8583 - val_acc: 0.0120
 
-Epoch 00002: val_loss improved from 4.86456 to 4.80659, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.87119 to 4.85831, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 4s - loss: 4.7745 - acc: 0.0163 - val_loss: 4.7535 - val_acc: 0.0156
+ - 4s - loss: 4.8410 - acc: 0.0135 - val_loss: 4.8086 - val_acc: 0.0144
 
-Epoch 00003: val_loss improved from 4.80659 to 4.75350, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.85831 to 4.80861, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 4s - loss: 4.7400 - acc: 0.0184 - val_loss: 4.7328 - val_acc: 0.0192
+ - 4s - loss: 4.7722 - acc: 0.0213 - val_loss: 4.7467 - val_acc: 0.0192
 
-Epoch 00004: val_loss improved from 4.75350 to 4.73278, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.80861 to 4.74672, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 4s - loss: 4.7135 - acc: 0.0220 - val_loss: 4.7077 - val_acc: 0.0299
+ - 4s - loss: 4.6960 - acc: 0.0225 - val_loss: 4.7104 - val_acc: 0.0216
 
-Epoch 00005: val_loss improved from 4.73278 to 4.70766, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.74672 to 4.71043, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -17101,7 +17125,7 @@ Epoch 00005: val_loss improved from 4.73278 to 4.70766, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f719b599588&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fef2e23cb70&gt;</pre>
 </div>
 
 </div>
@@ -17165,7 +17189,7 @@ Epoch 00005: val_loss improved from 4.73278 to 4.70766, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 2.5120%
+<pre>Test accuracy: 3.5885%
 </pre>
 </div>
 </div>
@@ -17177,7 +17201,7 @@ Epoch 00005: val_loss improved from 4.73278 to 4.70766, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Neither the timig nor the accuracy changed too significantly when compared to model 3. Let's make the model more complicated by flattening the output of the convolutional layers rather than applying a global average pooling.</strong></p>
+<p><strong>Neither the timing nor the accuracy changed too significantly when compared to model 3. Let's make the model more complicated by flattening the output of the convolutional layers rather than applying a global average pooling.</strong></p>
 
 </div>
 </div>
@@ -17233,6 +17257,8 @@ flatten_1 (Flatten)          (None, 144)               0
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               21750     
 _________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
+_________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
 Total params: 43,409
@@ -17311,25 +17337,25 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 4s - loss: 4.8771 - acc: 0.0115 - val_loss: 4.8286 - val_acc: 0.0180
+ - 5s - loss: 4.8765 - acc: 0.0114 - val_loss: 4.8168 - val_acc: 0.0311
 
-Epoch 00001: val_loss improved from inf to 4.82858, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.81683, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 4s - loss: 4.6607 - acc: 0.0295 - val_loss: 4.5851 - val_acc: 0.0299
+ - 4s - loss: 4.7052 - acc: 0.0257 - val_loss: 4.5901 - val_acc: 0.0323
 
-Epoch 00002: val_loss improved from 4.82858 to 4.58510, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.81683 to 4.59013, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 4s - loss: 4.4489 - acc: 0.0445 - val_loss: 4.4876 - val_acc: 0.0371
+ - 4s - loss: 4.5386 - acc: 0.0401 - val_loss: 4.4786 - val_acc: 0.0479
 
-Epoch 00003: val_loss improved from 4.58510 to 4.48762, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.59013 to 4.47857, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 4s - loss: 4.3159 - acc: 0.0590 - val_loss: 4.4808 - val_acc: 0.0491
+ - 4s - loss: 4.4049 - acc: 0.0516 - val_loss: 4.3844 - val_acc: 0.0515
 
-Epoch 00004: val_loss improved from 4.48762 to 4.48084, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.47857 to 4.38440, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 4s - loss: 4.1968 - acc: 0.0744 - val_loss: 4.4488 - val_acc: 0.0539
+ - 4s - loss: 4.2625 - acc: 0.0678 - val_loss: 4.3461 - val_acc: 0.0647
 
-Epoch 00005: val_loss improved from 4.48084 to 4.44882, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.38440 to 4.34608, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -17342,7 +17368,7 @@ Epoch 00005: val_loss improved from 4.48084 to 4.44882, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f71980c2d68&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fef1e442cf8&gt;</pre>
 </div>
 
 </div>
@@ -17406,7 +17432,7 @@ Epoch 00005: val_loss improved from 4.48084 to 4.44882, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 4.6651%
+<pre>Test accuracy: 5.7416%
 </pre>
 </div>
 </div>
@@ -17418,7 +17444,7 @@ Epoch 00005: val_loss improved from 4.48084 to 4.44882, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>This gives us an accuracy of 4.66% which is much better than the accuracy in our model 3 &amp; 4, meanwhile the time taken by this code is still only 4s per epoch.  Let's try how will things change if I change the kernel initializer from its default 'glorot_uniform' to 'glorot_normal'.</strong></p>
+<p><strong>This gives us an accuracy of 5.74% which is much better than the accuracy in our model 3 &amp; 4, meanwhile the time taken by this code is still only 4s per epoch.  Let's try to see how will things change if I change the kernel initializer from its default 'glorot_uniform' to 'glorot_normal'.</strong></p>
 
 </div>
 </div>
@@ -17474,6 +17500,8 @@ flatten_1 (Flatten)          (None, 144)               0
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               21750     
 _________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
+_________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
 Total params: 43,409
@@ -17551,25 +17579,25 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 4s - loss: 4.8793 - acc: 0.0091 - val_loss: 4.8449 - val_acc: 0.0180
+ - 4s - loss: 4.8705 - acc: 0.0115 - val_loss: 4.7981 - val_acc: 0.0240
 
-Epoch 00001: val_loss improved from inf to 4.84494, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.79806, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 4s - loss: 4.7465 - acc: 0.0260 - val_loss: 4.5889 - val_acc: 0.0347
+ - 4s - loss: 4.6657 - acc: 0.0305 - val_loss: 4.5720 - val_acc: 0.0407
 
-Epoch 00002: val_loss improved from 4.84494 to 4.58890, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.79806 to 4.57201, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 4s - loss: 4.4164 - acc: 0.0543 - val_loss: 4.3699 - val_acc: 0.0503
+ - 4s - loss: 4.4749 - acc: 0.0461 - val_loss: 4.4558 - val_acc: 0.0455
 
-Epoch 00003: val_loss improved from 4.58890 to 4.36988, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.57201 to 4.45582, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 4s - loss: 4.2282 - acc: 0.0659 - val_loss: 4.3233 - val_acc: 0.0611
+ - 4s - loss: 4.3319 - acc: 0.0572 - val_loss: 4.3789 - val_acc: 0.0539
 
-Epoch 00004: val_loss improved from 4.36988 to 4.32332, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.45582 to 4.37893, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 4s - loss: 4.1120 - acc: 0.0795 - val_loss: 4.2710 - val_acc: 0.0635
+ - 4s - loss: 4.1830 - acc: 0.0735 - val_loss: 4.3378 - val_acc: 0.0623
 
-Epoch 00005: val_loss improved from 4.32332 to 4.27097, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.37893 to 4.33777, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -17582,7 +17610,7 @@ Epoch 00005: val_loss improved from 4.32332 to 4.27097, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f7194c59208&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fee75f06860&gt;</pre>
 </div>
 
 </div>
@@ -17646,7 +17674,7 @@ Epoch 00005: val_loss improved from 4.32332 to 4.27097, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 6.5789%
+<pre>Test accuracy: 5.6220%
 </pre>
 </div>
 </div>
@@ -17658,7 +17686,7 @@ Epoch 00005: val_loss improved from 4.32332 to 4.27097, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>The accuracy of the model changed a lot upon using 'glorot_normal' for kernel initializer as compared to when we used the default 'glorot_uniform' initializer; It became 6.57% when compared to 4.67% with 'glorot_uniform' . So, let us just stick to 'glorot_normal' as our kernel initializer from now on. Let us try a little more complicated architechture by increasing the number of filters in the convolutional layers. (It's better to make the CNN more complicated than the DNN, since CNNs perform a much better task at identifying images.)</strong></p>
+<p><strong>The accuracy of the model dropped a bit upon using 'glorot_normal' for kernel initializer as compared to when we used the default 'glorot_uniform' initializer; It became 5.62% when compared to 5.74% with 'glorot_uniform' . So, let us just stick to the default i.e. 'glorot_uniform' as our kernel initializer from now on. Let us try a little more complicated architechture by increasing the number of filters in the convolutional layers. (It's better to make the CNN more complicated than the DNN, since CNNs perform a much better task at identifying images.)</strong></p>
 
 </div>
 </div>
@@ -17676,7 +17704,7 @@ Epoch 00005: val_loss improved from 4.32332 to 4.27097, saving model to /content
 <div class="prompt input_prompt">In&nbsp;[0]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
@@ -17713,6 +17741,8 @@ _________________________________________________________________
 flatten_1 (Flatten)          (None, 288)               0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               43350     
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
@@ -17791,25 +17821,25 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 5s - loss: 4.8691 - acc: 0.0115 - val_loss: 4.7964 - val_acc: 0.0204
+ - 5s - loss: 4.8505 - acc: 0.0129 - val_loss: 4.7394 - val_acc: 0.0240
 
-Epoch 00001: val_loss improved from inf to 4.79643, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.73944, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 5s - loss: 4.6339 - acc: 0.0319 - val_loss: 4.4101 - val_acc: 0.0527
+ - 4s - loss: 4.5805 - acc: 0.0350 - val_loss: 4.4364 - val_acc: 0.0383
 
-Epoch 00002: val_loss improved from 4.79643 to 4.41012, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.73944 to 4.43640, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 5s - loss: 4.2672 - acc: 0.0618 - val_loss: 4.2379 - val_acc: 0.0719
+ - 4s - loss: 4.3052 - acc: 0.0569 - val_loss: 4.2960 - val_acc: 0.0635
 
-Epoch 00003: val_loss improved from 4.41012 to 4.23785, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.43640 to 4.29604, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 4s - loss: 4.0668 - acc: 0.0829 - val_loss: 4.1997 - val_acc: 0.0659
+ - 4s - loss: 4.1427 - acc: 0.0723 - val_loss: 4.2081 - val_acc: 0.0707
 
-Epoch 00004: val_loss improved from 4.23785 to 4.19975, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.29604 to 4.20806, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 4s - loss: 3.9173 - acc: 0.1061 - val_loss: 4.1148 - val_acc: 0.0898
+ - 4s - loss: 4.0033 - acc: 0.0871 - val_loss: 4.1792 - val_acc: 0.0635
 
-Epoch 00005: val_loss improved from 4.19975 to 4.11480, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.20806 to 4.17922, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -17822,7 +17852,7 @@ Epoch 00005: val_loss improved from 4.19975 to 4.11480, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f7190ea6390&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fee741f8e80&gt;</pre>
 </div>
 
 </div>
@@ -17886,7 +17916,7 @@ Epoch 00005: val_loss improved from 4.19975 to 4.11480, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 8.4928%
+<pre>Test accuracy: 8.0144%
 </pre>
 </div>
 </div>
@@ -17898,7 +17928,7 @@ Epoch 00005: val_loss improved from 4.19975 to 4.11480, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>This seems to have about 8.49% accuracy while still taking only 4s per epoch. The timining being quite good, we still can afford to make the model a little more complicated to see if achieves a better accuracy. Let's increase the size of the filters.</strong></p>
+<p><strong>This seems to have about 8.01% accuracy, which is much better than before. Meanwhile, it still takes only 4s per epoch. The timining being quite good, we still can afford to make the model a little more complicated to see if achieves a better accuracy. Let's increase the size of the filters.</strong></p>
 
 </div>
 </div>
@@ -17916,7 +17946,7 @@ Epoch 00005: val_loss improved from 4.19975 to 4.11480, saving model to /content
 <div class="prompt input_prompt">In&nbsp;[0]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
@@ -17953,6 +17983,8 @@ _________________________________________________________________
 flatten_1 (Flatten)          (None, 128)               0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               19350     
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
@@ -18031,25 +18063,25 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 5s - loss: 4.8486 - acc: 0.0111 - val_loss: 4.7207 - val_acc: 0.0240
+ - 5s - loss: 4.8778 - acc: 0.0117 - val_loss: 4.8273 - val_acc: 0.0275
 
-Epoch 00001: val_loss improved from inf to 4.72069, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.82725, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 4s - loss: 4.5714 - acc: 0.0376 - val_loss: 4.5032 - val_acc: 0.0383
+ - 4s - loss: 4.6852 - acc: 0.0299 - val_loss: 4.5678 - val_acc: 0.0335
 
-Epoch 00002: val_loss improved from 4.72069 to 4.50315, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.82725 to 4.56780, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 4s - loss: 4.2758 - acc: 0.0611 - val_loss: 4.3238 - val_acc: 0.0503
+ - 4s - loss: 4.4833 - acc: 0.0377 - val_loss: 4.4113 - val_acc: 0.0359
 
-Epoch 00003: val_loss improved from 4.50315 to 4.32383, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.56780 to 4.41125, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 4s - loss: 4.0706 - acc: 0.0826 - val_loss: 4.1892 - val_acc: 0.0623
+ - 4s - loss: 4.3181 - acc: 0.0545 - val_loss: 4.3214 - val_acc: 0.0623
 
-Epoch 00004: val_loss improved from 4.32383 to 4.18916, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.41125 to 4.32142, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 4s - loss: 3.8956 - acc: 0.0996 - val_loss: 4.0752 - val_acc: 0.0790
+ - 4s - loss: 4.1711 - acc: 0.0695 - val_loss: 4.2434 - val_acc: 0.0575
 
-Epoch 00005: val_loss improved from 4.18916 to 4.07519, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.32142 to 4.24342, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -18062,7 +18094,7 @@ Epoch 00005: val_loss improved from 4.18916 to 4.07519, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f718da20a90&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fee6d482550&gt;</pre>
 </div>
 
 </div>
@@ -18126,7 +18158,7 @@ Epoch 00005: val_loss improved from 4.18916 to 4.07519, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 7.1770%
+<pre>Test accuracy: 5.9809%
 </pre>
 </div>
 </div>
@@ -18138,7 +18170,7 @@ Epoch 00005: val_loss improved from 4.18916 to 4.07519, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>This model produces a lower test accuracy than model 7; dropping to ~ 7.18% from 8.49%. Let's try to increase the complexity of this model more by increasing the number of filters in the convolutional layers, and see if that produces a better model than model 7.</strong></p>
+<p><strong>This model produces a lower test accuracy than model 7; dropping to ~ 5.98% from 8.01%. Let's try to increase the complexity of this model more by increasing the number of filters in the convolutional layers, and see if that produces a better model than model 7.</strong></p>
 
 </div>
 </div>
@@ -18156,7 +18188,7 @@ Epoch 00005: val_loss improved from 4.18916 to 4.07519, saving model to /content
 <div class="prompt input_prompt">In&nbsp;[0]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
@@ -18193,6 +18225,8 @@ _________________________________________________________________
 flatten_1 (Flatten)          (None, 256)               0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               38550     
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
@@ -18271,25 +18305,25 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/5
- - 5s - loss: 4.8535 - acc: 0.0118 - val_loss: 4.7534 - val_acc: 0.0251
+ - 5s - loss: 4.8759 - acc: 0.0108 - val_loss: 4.8006 - val_acc: 0.0168
 
-Epoch 00001: val_loss improved from inf to 4.75341, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.80064, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/5
- - 4s - loss: 4.5512 - acc: 0.0395 - val_loss: 4.3933 - val_acc: 0.0587
+ - 4s - loss: 4.7063 - acc: 0.0222 - val_loss: 4.6105 - val_acc: 0.0263
 
-Epoch 00002: val_loss improved from 4.75341 to 4.39332, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.80064 to 4.61054, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/5
- - 4s - loss: 4.2408 - acc: 0.0641 - val_loss: 4.2225 - val_acc: 0.0671
+ - 4s - loss: 4.4656 - acc: 0.0437 - val_loss: 4.4312 - val_acc: 0.0467
 
-Epoch 00003: val_loss improved from 4.39332 to 4.22249, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.61054 to 4.43118, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/5
- - 4s - loss: 4.0226 - acc: 0.0885 - val_loss: 4.1686 - val_acc: 0.0731
+ - 4s - loss: 4.2544 - acc: 0.0624 - val_loss: 4.2544 - val_acc: 0.0635
 
-Epoch 00004: val_loss improved from 4.22249 to 4.16864, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.43118 to 4.25442, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/5
- - 4s - loss: 3.8212 - acc: 0.1168 - val_loss: 4.0960 - val_acc: 0.0850
+ - 4s - loss: 4.0969 - acc: 0.0750 - val_loss: 4.1303 - val_acc: 0.0754
 
-Epoch 00005: val_loss improved from 4.16864 to 4.09602, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.25442 to 4.13027, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 </pre>
 </div>
 </div>
@@ -18302,7 +18336,7 @@ Epoch 00005: val_loss improved from 4.16864 to 4.09602, saving model to /content
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f718aebfc50&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fee69f9a438&gt;</pre>
 </div>
 
 </div>
@@ -18366,7 +18400,7 @@ Epoch 00005: val_loss improved from 4.16864 to 4.09602, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 6.8182%
+<pre>Test accuracy: 7.1770%
 </pre>
 </div>
 </div>
@@ -18378,7 +18412,7 @@ Epoch 00005: val_loss improved from 4.16864 to 4.09602, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>This actually decreases the test accuracy a little bit more; dropping from 7.17% for model 8 to ~6.82% here. Model 7 is clearly the best we have so far. Let's try to run it for more epochs, i.e. until it stops improving and see how much does the score improve.</strong></p>
+<p><strong>This increases the test accuracy a little bit more; becoming 7.17% here from ~5.98% in model 8. But Model 7 is clearly the best we have so far. Let's try to do a grid search  over the dropout rate in Model 7, to improve it further.</strong></p>
 
 </div>
 </div>
@@ -18386,7 +18420,15 @@ Epoch 00005: val_loss improved from 4.16864 to 4.09602, saving model to /content
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2><font color=green> Model 10 (same as model 7, but running it for more number of epochs) </font></h2>
+<h2><font color=green> Model 10 (same as model 7, with RandomizedSearchCV over dropout rate ) </font></h2>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>__I will be following the tutorial given at <a href="https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/">https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/</a></p>
 
 </div>
 </div>
@@ -18396,10 +18438,78 @@ Epoch 00005: val_loss improved from 4.16864 to 4.09602, saving model to /content
 <div class="prompt input_prompt">In&nbsp;[0]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#model =  my_model(weights_init=0,input_shape=train_tensors.shape[1:], kernel_size=5, strd=2, pool_size=2, n_filters_lis=[8, 16, 32], GlAvgPool=False, n_Dense_hidden=150)</span>
-<span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Actually we will use RandomizedSearchCV instead of GridSearchCV </span>
+<span class="c1"># importing RandomizedSearchCV from sklearn</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">RandomizedSearchCV</span> 
+</pre></div>
 
-<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[0]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># We have to build the model through KerasClassifier before feeding it into RandomizedSearchCV</span>
+<span class="kn">from</span> <span class="nn">keras.wrappers.scikit_learn</span> <span class="k">import</span> <span class="n">KerasClassifier</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[0]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># function to pass the model to keras classifier</span>
+<span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">):</span>
+  <span class="c1">#building the model</span>
+  <span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> 
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                    <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">)</span>
+  <span class="c1">#compiling the model</span>
+  <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+  <span class="k">return</span> <span class="n">model</span>
+
+<span class="c1">#creating the model</span>
+<span class="n">model</span><span class="o">=</span><span class="n">KerasClassifier</span><span class="p">(</span><span class="n">build_fn</span><span class="o">=</span><span class="n">create_model</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[0]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># defining the parameter distribution</span>
+<span class="c1"># will have to import uniform from scipy.stats</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">uniform</span>
+
+<span class="n">param_dist</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dropout_rate&#39;</span><span class="p">:</span><span class="n">uniform</span><span class="p">()}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[0]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">random_search</span><span class="o">=</span><span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">param_distributions</span><span class="o">=</span><span class="n">param_dist</span><span class="p">,</span><span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">result</span><span class="o">=</span><span class="n">random_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_tensors</span><span class="p">,</span> <span class="n">train_targets</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -18416,31 +18526,48 @@ Epoch 00005: val_loss improved from 4.16864 to 4.09602, saving model to /content
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>_________________________________________________________________
-Layer (type)                 Output Shape              Param #   
-=================================================================
-conv2d_1 (Conv2D)            (None, 111, 111, 8)       224       
-_________________________________________________________________
-max_pooling2d_1 (MaxPooling2 (None, 55, 55, 8)         0         
-_________________________________________________________________
-conv2d_2 (Conv2D)            (None, 27, 27, 16)        1168      
-_________________________________________________________________
-max_pooling2d_2 (MaxPooling2 (None, 13, 13, 16)        0         
-_________________________________________________________________
-conv2d_3 (Conv2D)            (None, 6, 6, 32)          4640      
-_________________________________________________________________
-max_pooling2d_3 (MaxPooling2 (None, 3, 3, 32)          0         
-_________________________________________________________________
-flatten_1 (Flatten)          (None, 288)               0         
-_________________________________________________________________
-dense_1 (Dense)              (None, 150)               43350     
-_________________________________________________________________
-dense_2 (Dense)              (None, 133)               20083     
-=================================================================
-Total params: 69,465
-Trainable params: 69,465
-Non-trainable params: 0
-_________________________________________________________________
+<pre>Fitting 10 folds for each of 10 candidates, totalling 100 fits
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>[Parallel(n_jobs=1)]: Using backend SequentialBackend with 1 concurrent workers.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:3445: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>[Parallel(n_jobs=1)]: Done 100 out of 100 | elapsed: 35.8min finished
 </pre>
 </div>
 </div>
@@ -18449,51 +18576,12 @@ _________________________________________________________________
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Compile-the-Model">Compile the Model<a class="anchor-link" href="#Compile-the-Model">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[0]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="(IMPLEMENTATION)-Train-the-Model">(IMPLEMENTATION) Train the Model<a class="anchor-link" href="#(IMPLEMENTATION)-Train-the-Model">&#182;</a></h3><p>Train your model in the code cell below.  Use model checkpointing to save the model that attains the best validation loss.</p>
-<p>You are welcome to <a href="https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html">augment the training data</a>, but this is not a requirement.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### TODO: specify the number of epochs that you would like to use to train the model.</span>
-
-<span class="n">epochs</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="c1">### Do NOT modify the code below this line.</span>
-
-<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;/content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5&#39;</span><span class="p">,</span> 
-                               <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">save_best_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_tensors</span><span class="p">,</span> <span class="n">train_targets</span><span class="p">,</span> 
-          <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_tensors</span><span class="p">,</span> <span class="n">valid_targets</span><span class="p">),</span>
-          <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">checkpointer</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;RandomizedSearchCV returned a best score of : </span><span class="si">{}</span><span class="s2"> for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">best_score_</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">best_params_</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -18510,127 +18598,22 @@ _________________________________________________________________
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Train on 6680 samples, validate on 835 samples
-Epoch 1/15
- - 5s - loss: 4.8692 - acc: 0.0130 - val_loss: 4.7847 - val_acc: 0.0228
-
-Epoch 00001: val_loss improved from inf to 4.78472, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 2/15
- - 4s - loss: 4.5632 - acc: 0.0382 - val_loss: 4.4290 - val_acc: 0.0479
-
-Epoch 00002: val_loss improved from 4.78472 to 4.42900, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 3/15
- - 4s - loss: 4.2650 - acc: 0.0657 - val_loss: 4.2935 - val_acc: 0.0515
-
-Epoch 00003: val_loss improved from 4.42900 to 4.29354, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 4/15
- - 4s - loss: 4.0965 - acc: 0.0787 - val_loss: 4.2717 - val_acc: 0.0599
-
-Epoch 00004: val_loss improved from 4.29354 to 4.27173, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 5/15
- - 4s - loss: 3.9566 - acc: 0.1031 - val_loss: 4.1955 - val_acc: 0.0802
-
-Epoch 00005: val_loss improved from 4.27173 to 4.19552, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 6/15
- - 4s - loss: 3.7942 - acc: 0.1249 - val_loss: 4.1757 - val_acc: 0.0874
-
-Epoch 00006: val_loss improved from 4.19552 to 4.17575, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 7/15
- - 4s - loss: 3.6392 - acc: 0.1525 - val_loss: 4.1498 - val_acc: 0.0994
-
-Epoch 00007: val_loss improved from 4.17575 to 4.14980, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 8/15
- - 4s - loss: 3.4949 - acc: 0.1717 - val_loss: 4.1608 - val_acc: 0.0766
-
-Epoch 00008: val_loss did not improve from 4.14980
-Epoch 9/15
- - 4s - loss: 3.3389 - acc: 0.2121 - val_loss: 4.2369 - val_acc: 0.0754
-
-Epoch 00009: val_loss did not improve from 4.14980
-Epoch 10/15
- - 5s - loss: 3.1815 - acc: 0.2374 - val_loss: 4.3913 - val_acc: 0.0814
-
-Epoch 00010: val_loss did not improve from 4.14980
-Epoch 11/15
- - 4s - loss: 3.0210 - acc: 0.2623 - val_loss: 4.3497 - val_acc: 0.1018
-
-Epoch 00011: val_loss did not improve from 4.14980
-Epoch 12/15
- - 4s - loss: 2.8626 - acc: 0.2931 - val_loss: 4.3927 - val_acc: 0.0874
-
-Epoch 00012: val_loss did not improve from 4.14980
-Epoch 13/15
- - 4s - loss: 2.7045 - acc: 0.3237 - val_loss: 4.5784 - val_acc: 0.0910
-
-Epoch 00013: val_loss did not improve from 4.14980
-Epoch 14/15
- - 4s - loss: 2.5398 - acc: 0.3533 - val_loss: 4.7926 - val_acc: 0.0850
-
-Epoch 00014: val_loss did not improve from 4.14980
-Epoch 15/15
- - 5s - loss: 2.3849 - acc: 0.3922 - val_loss: 4.8987 - val_acc: 0.0982
-
-Epoch 00015: val_loss did not improve from 4.14980
+<pre>RandomizedSearchCV returned a best score of : 0.06422155818673309 for {&#39;dropout_rate&#39;: 0.25540476639184817}
 </pre>
 </div>
 </div>
 
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[0]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f71879d6550&gt;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Load-the-Model-with-the-Best-Validation-Loss">Load the Model with the Best Validation Loss<a class="anchor-link" href="#Load-the-Model-with-the-Best-Validation-Loss">&#182;</a></h3>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[0]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="s1">&#39;/content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Test-the-Model">Test the Model<a class="anchor-link" href="#Test-the-Model">&#182;</a></h3><p>Try out your model on the test dataset of dog images.  Ensure that your test accuracy is greater than 1%.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get index of predicted dog breed for each image in test set</span>
-<span class="n">dog_breed_predictions</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span> <span class="k">for</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="n">test_tensors</span><span class="p">]</span>
-
-<span class="c1"># report test accuracy</span>
-<span class="n">test_accuracy</span> <span class="o">=</span> <span class="mi">100</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dog_breed_predictions</span><span class="p">)</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">test_targets</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">dog_breed_predictions</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test accuracy: </span><span class="si">%.4f%%</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">test_accuracy</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_score</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">test_tensors</span><span class="p">,</span> <span class="n">test_targets</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test accuracy is: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_score</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -18647,7 +18630,7 @@ Epoch 00015: val_loss did not improve from 4.14980
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 9.0909%
+<pre>test accuracy is: 0.0478468907186004
 </pre>
 </div>
 </div>
@@ -18655,332 +18638,6 @@ Epoch 00015: val_loss did not improve from 4.14980
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Great! We got a test accuracy of 9.09% which is much better than the required 1%. However, there is huge difference between the accuracy of the training set and the validation/test set. This indicates a large amount of overfitting. Let's try to rectify this by training it on augmented data.</strong></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2><font color=green> Model 11 (same as model 10, but training it on augmented data) </font></h2>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">weights_init</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">input_shape</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_filters_lis</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">],</span> <span class="n">GlAvgPool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_Dense_hidden</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>_________________________________________________________________
-Layer (type)                 Output Shape              Param #   
-=================================================================
-conv2d_1 (Conv2D)            (None, 111, 111, 8)       224       
-_________________________________________________________________
-max_pooling2d_1 (MaxPooling2 (None, 55, 55, 8)         0         
-_________________________________________________________________
-conv2d_2 (Conv2D)            (None, 27, 27, 16)        1168      
-_________________________________________________________________
-max_pooling2d_2 (MaxPooling2 (None, 13, 13, 16)        0         
-_________________________________________________________________
-conv2d_3 (Conv2D)            (None, 6, 6, 32)          4640      
-_________________________________________________________________
-max_pooling2d_3 (MaxPooling2 (None, 3, 3, 32)          0         
-_________________________________________________________________
-flatten_1 (Flatten)          (None, 288)               0         
-_________________________________________________________________
-dense_1 (Dense)              (None, 150)               43350     
-_________________________________________________________________
-dense_2 (Dense)              (None, 133)               20083     
-=================================================================
-Total params: 69,465
-Trainable params: 69,465
-Non-trainable params: 0
-_________________________________________________________________
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Compile-the-Model">Compile the Model<a class="anchor-link" href="#Compile-the-Model">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="(IMPLEMENTATION)-Train-the-Model">(IMPLEMENTATION) Train the Model<a class="anchor-link" href="#(IMPLEMENTATION)-Train-the-Model">&#182;</a></h3><p>Train your model in the code cell below.  Use model checkpointing to save the model that attains the best validation loss.</p>
-<p>You are welcome to <a href="https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html">augment the training data</a>, but this is not a requirement.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">keras.preprocessing.image</span> <span class="k">import</span> <span class="n">ImageDataGenerator</span>
-
-<span class="n">datagen</span><span class="o">=</span><span class="n">ImageDataGenerator</span><span class="p">(</span><span class="n">rotation_range</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">width_shift_range</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                          <span class="n">height_shift_range</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">horizontal_flip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                          <span class="n">vertical_flip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">datagen</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_tensors</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">epochs</span><span class="o">=</span><span class="mi">20</span>
-<span class="n">batch_size</span><span class="o">=</span><span class="mi">10</span> <span class="c1"># had to keep smaller batches to avoid out-of-memory error</span>
-<span class="n">steps_per_epoch</span><span class="o">=</span><span class="n">train_tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="n">batch_size</span>
-
-
-<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;/content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5&#39;</span><span class="p">,</span>
-                               <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">save_best_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">fit_generator</span><span class="p">(</span><span class="n">datagen</span><span class="o">.</span><span class="n">flow</span><span class="p">(</span><span class="n">train_tensors</span><span class="p">,</span> <span class="n">train_targets</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">),</span> 
-                    <span class="n">steps_per_epoch</span><span class="o">=</span><span class="n">steps_per_epoch</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
-                   <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">checkpointer</span><span class="p">],</span>
-                   <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_tensors</span><span class="p">,</span> <span class="n">valid_targets</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Epoch 1/20
- - 57s - loss: 4.8628 - acc: 0.0117 - val_loss: 4.7341 - val_acc: 0.0251
-
-Epoch 00001: val_loss improved from inf to 4.73415, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 2/20
- - 56s - loss: 4.6705 - acc: 0.0237 - val_loss: 4.6049 - val_acc: 0.0335
-
-Epoch 00002: val_loss improved from 4.73415 to 4.60488, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 3/20
- - 56s - loss: 4.5780 - acc: 0.0319 - val_loss: 4.5378 - val_acc: 0.0383
-
-Epoch 00003: val_loss improved from 4.60488 to 4.53776, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 4/20
- - 56s - loss: 4.4407 - acc: 0.0413 - val_loss: 4.4176 - val_acc: 0.0395
-
-Epoch 00004: val_loss improved from 4.53776 to 4.41757, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 5/20
- - 56s - loss: 4.3283 - acc: 0.0496 - val_loss: 4.3374 - val_acc: 0.0443
-
-Epoch 00005: val_loss improved from 4.41757 to 4.33743, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 6/20
- - 56s - loss: 4.2659 - acc: 0.0567 - val_loss: 4.2794 - val_acc: 0.0527
-
-Epoch 00006: val_loss improved from 4.33743 to 4.27936, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 7/20
- - 55s - loss: 4.2084 - acc: 0.0597 - val_loss: 4.2517 - val_acc: 0.0467
-
-Epoch 00007: val_loss improved from 4.27936 to 4.25167, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 8/20
- - 56s - loss: 4.1685 - acc: 0.0710 - val_loss: 4.2512 - val_acc: 0.0563
-
-Epoch 00008: val_loss improved from 4.25167 to 4.25123, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 9/20
- - 58s - loss: 4.1190 - acc: 0.0722 - val_loss: 4.1319 - val_acc: 0.0707
-
-Epoch 00009: val_loss improved from 4.25123 to 4.13186, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 10/20
- - 55s - loss: 4.0771 - acc: 0.0783 - val_loss: 4.1475 - val_acc: 0.0647
-
-Epoch 00010: val_loss did not improve from 4.13186
-Epoch 11/20
- - 55s - loss: 4.0335 - acc: 0.0802 - val_loss: 4.0722 - val_acc: 0.0850
-
-Epoch 00011: val_loss improved from 4.13186 to 4.07215, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 12/20
- - 57s - loss: 3.9926 - acc: 0.0895 - val_loss: 4.0499 - val_acc: 0.0778
-
-Epoch 00012: val_loss improved from 4.07215 to 4.04989, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 13/20
- - 56s - loss: 3.9608 - acc: 0.0942 - val_loss: 4.0233 - val_acc: 0.0754
-
-Epoch 00013: val_loss improved from 4.04989 to 4.02329, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 14/20
- - 54s - loss: 3.9215 - acc: 0.0948 - val_loss: 4.0238 - val_acc: 0.0814
-
-Epoch 00014: val_loss did not improve from 4.02329
-Epoch 15/20
- - 57s - loss: 3.8977 - acc: 0.1024 - val_loss: 3.9714 - val_acc: 0.0862
-
-Epoch 00015: val_loss improved from 4.02329 to 3.97145, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 16/20
- - 56s - loss: 3.8804 - acc: 0.1057 - val_loss: 4.0267 - val_acc: 0.0910
-
-Epoch 00016: val_loss did not improve from 3.97145
-Epoch 17/20
- - 54s - loss: 3.8466 - acc: 0.1072 - val_loss: 3.9586 - val_acc: 0.0946
-
-Epoch 00017: val_loss improved from 3.97145 to 3.95858, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 18/20
- - 57s - loss: 3.8265 - acc: 0.1096 - val_loss: 4.0671 - val_acc: 0.0743
-
-Epoch 00018: val_loss did not improve from 3.95858
-Epoch 19/20
- - 57s - loss: 3.8100 - acc: 0.1138 - val_loss: 3.8689 - val_acc: 0.1054
-
-Epoch 00019: val_loss improved from 3.95858 to 3.86892, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
-Epoch 20/20
- - 57s - loss: 3.8034 - acc: 0.1091 - val_loss: 4.0185 - val_acc: 0.0850
-
-Epoch 00020: val_loss did not improve from 3.86892
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[0]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f71820db9e8&gt;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Load-the-Model-with-the-Best-Validation-Loss">Load the Model with the Best Validation Loss<a class="anchor-link" href="#Load-the-Model-with-the-Best-Validation-Loss">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="s1">&#39;/content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Test-the-Model">Test the Model<a class="anchor-link" href="#Test-the-Model">&#182;</a></h3><p>Try out your model on the test dataset of dog images.  Ensure that your test accuracy is greater than 1%.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[0]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get index of predicted dog breed for each image in test set</span>
-<span class="n">dog_breed_predictions</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span> <span class="k">for</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="n">test_tensors</span><span class="p">]</span>
-
-<span class="c1"># report test accuracy</span>
-<span class="n">test_accuracy</span> <span class="o">=</span> <span class="mi">100</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dog_breed_predictions</span><span class="p">)</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">test_targets</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">dog_breed_predictions</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test accuracy: </span><span class="si">%.4f%%</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">test_accuracy</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 11.9617%
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>The test set accuracy became 11.96 percent after running the model with augmented data for 20 epochs!!</strong></p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -19033,6 +18690,8 @@ _________________________________________________________________
 global_average_pooling2d_1 ( (None, 1024)              0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               153750    
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
@@ -19112,53 +18771,53 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/12
- - 14s - loss: 4.9238 - acc: 0.0091 - val_loss: 4.8535 - val_acc: 0.0084
+ - 14s - loss: 4.9223 - acc: 0.0103 - val_loss: 4.8734 - val_acc: 0.0108
 
-Epoch 00001: val_loss improved from inf to 4.85351, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.87337, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/12
- - 13s - loss: 4.7901 - acc: 0.0202 - val_loss: 4.7256 - val_acc: 0.0180
+ - 13s - loss: 4.8458 - acc: 0.0153 - val_loss: 4.8121 - val_acc: 0.0120
 
-Epoch 00002: val_loss improved from 4.85351 to 4.72563, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.87337 to 4.81206, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/12
- - 13s - loss: 4.5274 - acc: 0.0392 - val_loss: 4.3248 - val_acc: 0.0611
+ - 13s - loss: 4.7093 - acc: 0.0226 - val_loss: 4.7013 - val_acc: 0.0287
 
-Epoch 00003: val_loss improved from 4.72563 to 4.32485, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.81206 to 4.70134, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/12
- - 13s - loss: 4.2282 - acc: 0.0647 - val_loss: 4.1215 - val_acc: 0.0659
+ - 13s - loss: 4.5443 - acc: 0.0331 - val_loss: 4.4104 - val_acc: 0.0443
 
-Epoch 00004: val_loss improved from 4.32485 to 4.12149, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00004: val_loss improved from 4.70134 to 4.41038, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/12
- - 13s - loss: 3.9803 - acc: 0.0925 - val_loss: 4.1377 - val_acc: 0.0683
+ - 13s - loss: 4.2772 - acc: 0.0551 - val_loss: 4.2912 - val_acc: 0.0599
 
-Epoch 00005: val_loss did not improve from 4.12149
+Epoch 00005: val_loss improved from 4.41038 to 4.29117, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 6/12
- - 13s - loss: 3.7377 - acc: 0.1226 - val_loss: 4.0719 - val_acc: 0.0826
+ - 13s - loss: 4.0557 - acc: 0.0713 - val_loss: 4.0710 - val_acc: 0.0886
 
-Epoch 00006: val_loss improved from 4.12149 to 4.07187, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00006: val_loss improved from 4.29117 to 4.07100, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 7/12
- - 13s - loss: 3.4229 - acc: 0.1829 - val_loss: 3.8164 - val_acc: 0.1198
+ - 13s - loss: 3.8615 - acc: 0.0985 - val_loss: 4.0096 - val_acc: 0.0862
 
-Epoch 00007: val_loss improved from 4.07187 to 3.81645, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00007: val_loss improved from 4.07100 to 4.00959, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 8/12
- - 13s - loss: 3.0175 - acc: 0.2431 - val_loss: 3.8670 - val_acc: 0.1257
+ - 13s - loss: 3.6439 - acc: 0.1256 - val_loss: 3.8251 - val_acc: 0.1066
 
-Epoch 00008: val_loss did not improve from 3.81645
+Epoch 00008: val_loss improved from 4.00959 to 3.82510, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 9/12
- - 13s - loss: 2.5238 - acc: 0.3422 - val_loss: 4.0906 - val_acc: 0.1365
+ - 13s - loss: 3.3813 - acc: 0.1689 - val_loss: 4.0842 - val_acc: 0.0922
 
-Epoch 00009: val_loss did not improve from 3.81645
+Epoch 00009: val_loss did not improve from 3.82510
 Epoch 10/12
- - 13s - loss: 1.9257 - acc: 0.4837 - val_loss: 4.6094 - val_acc: 0.1257
+ - 13s - loss: 3.0559 - acc: 0.2292 - val_loss: 3.8989 - val_acc: 0.1138
 
-Epoch 00010: val_loss did not improve from 3.81645
+Epoch 00010: val_loss did not improve from 3.82510
 Epoch 11/12
- - 13s - loss: 1.3566 - acc: 0.6283 - val_loss: 4.8187 - val_acc: 0.1353
+ - 13s - loss: 2.6829 - acc: 0.2975 - val_loss: 3.9124 - val_acc: 0.1413
 
-Epoch 00011: val_loss did not improve from 3.81645
+Epoch 00011: val_loss did not improve from 3.82510
 Epoch 12/12
- - 13s - loss: 0.8734 - acc: 0.7552 - val_loss: 6.0510 - val_acc: 0.1413
+ - 13s - loss: 2.2779 - acc: 0.3769 - val_loss: 3.9417 - val_acc: 0.1569
 
-Epoch 00012: val_loss did not improve from 3.81645
+Epoch 00012: val_loss did not improve from 3.82510
 </pre>
 </div>
 </div>
@@ -19171,7 +18830,7 @@ Epoch 00012: val_loss did not improve from 3.81645
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f7181c06080&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fd7680c3908&gt;</pre>
 </div>
 
 </div>
@@ -19235,7 +18894,7 @@ Epoch 00012: val_loss did not improve from 3.81645
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 11.0048%
+<pre>Test accuracy: 11.2440%
 </pre>
 </div>
 </div>
@@ -19299,6 +18958,8 @@ _________________________________________________________________
 flatten_1 (Flatten)          (None, 6400)              0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 150)               960150    
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 150)               0         
 _________________________________________________________________
 dense_2 (Dense)              (None, 133)               20083     
 =================================================================
@@ -19377,53 +19038,53 @@ _________________________________________________________________
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Train on 6680 samples, validate on 835 samples
 Epoch 1/12
- - 9s - loss: 4.8518 - acc: 0.0126 - val_loss: 4.6904 - val_acc: 0.0299
+ - 8s - loss: 4.8699 - acc: 0.0133 - val_loss: 4.7434 - val_acc: 0.0204
 
-Epoch 00001: val_loss improved from inf to 4.69042, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00001: val_loss improved from inf to 4.74343, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 2/12
- - 8s - loss: 4.5314 - acc: 0.0392 - val_loss: 4.4725 - val_acc: 0.0419
+ - 8s - loss: 4.6220 - acc: 0.0298 - val_loss: 4.4977 - val_acc: 0.0407
 
-Epoch 00002: val_loss improved from 4.69042 to 4.47249, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00002: val_loss improved from 4.74343 to 4.49770, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 3/12
- - 8s - loss: 4.1144 - acc: 0.0834 - val_loss: 4.1482 - val_acc: 0.0766
+ - 8s - loss: 4.3859 - acc: 0.0540 - val_loss: 4.4170 - val_acc: 0.0527
 
-Epoch 00003: val_loss improved from 4.47249 to 4.14821, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00003: val_loss improved from 4.49770 to 4.41701, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 4/12
- - 8s - loss: 3.7253 - acc: 0.1440 - val_loss: 4.4378 - val_acc: 0.0599
+ - 7s - loss: 4.0906 - acc: 0.0967 - val_loss: 4.3915 - val_acc: 0.0599
 
-Epoch 00004: val_loss did not improve from 4.14821
+Epoch 00004: val_loss improved from 4.41701 to 4.39147, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 5/12
- - 8s - loss: 3.2549 - acc: 0.2175 - val_loss: 4.0675 - val_acc: 0.0994
+ - 7s - loss: 3.6605 - acc: 0.1636 - val_loss: 4.3645 - val_acc: 0.0802
 
-Epoch 00005: val_loss improved from 4.14821 to 4.06752, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
+Epoch 00005: val_loss improved from 4.39147 to 4.36454, saving model to /content/gdrive/My Drive/Colab Notebooks/dog-project-master/saved_models/weights.best.from_scratch.hdf5
 Epoch 6/12
- - 8s - loss: 2.6362 - acc: 0.3488 - val_loss: 4.3146 - val_acc: 0.1090
+ - 7s - loss: 3.0757 - acc: 0.2668 - val_loss: 4.5121 - val_acc: 0.0766
 
-Epoch 00006: val_loss did not improve from 4.06752
+Epoch 00006: val_loss did not improve from 4.36454
 Epoch 7/12
- - 8s - loss: 1.8721 - acc: 0.5135 - val_loss: 5.0735 - val_acc: 0.1114
+ - 7s - loss: 2.4105 - acc: 0.4007 - val_loss: 4.9273 - val_acc: 0.0874
 
-Epoch 00007: val_loss did not improve from 4.06752
+Epoch 00007: val_loss did not improve from 4.36454
 Epoch 8/12
- - 8s - loss: 1.1384 - acc: 0.6925 - val_loss: 6.3557 - val_acc: 0.1054
+ - 7s - loss: 1.7314 - acc: 0.5540 - val_loss: 5.8537 - val_acc: 0.0874
 
-Epoch 00008: val_loss did not improve from 4.06752
+Epoch 00008: val_loss did not improve from 4.36454
 Epoch 9/12
- - 8s - loss: 0.6196 - acc: 0.8253 - val_loss: 8.5804 - val_acc: 0.0910
+ - 7s - loss: 1.2449 - acc: 0.6597 - val_loss: 6.4352 - val_acc: 0.0898
 
-Epoch 00009: val_loss did not improve from 4.06752
+Epoch 00009: val_loss did not improve from 4.36454
 Epoch 10/12
- - 8s - loss: 0.3610 - acc: 0.8963 - val_loss: 8.7532 - val_acc: 0.1090
+ - 8s - loss: 0.8706 - acc: 0.7561 - val_loss: 7.3991 - val_acc: 0.0695
 
-Epoch 00010: val_loss did not improve from 4.06752
+Epoch 00010: val_loss did not improve from 4.36454
 Epoch 11/12
- - 8s - loss: 0.2616 - acc: 0.9246 - val_loss: 9.7135 - val_acc: 0.1054
+ - 8s - loss: 0.6888 - acc: 0.8118 - val_loss: 7.7383 - val_acc: 0.0802
 
-Epoch 00011: val_loss did not improve from 4.06752
+Epoch 00011: val_loss did not improve from 4.36454
 Epoch 12/12
- - 8s - loss: 0.2293 - acc: 0.9419 - val_loss: 9.8783 - val_acc: 0.0946
+ - 8s - loss: 0.5512 - acc: 0.8446 - val_loss: 8.6198 - val_acc: 0.0778
 
-Epoch 00012: val_loss did not improve from 4.06752
+Epoch 00012: val_loss did not improve from 4.36454
 </pre>
 </div>
 </div>
@@ -19436,7 +19097,7 @@ Epoch 00012: val_loss did not improve from 4.06752
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f717e72b390&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7fd773d19518&gt;</pre>
 </div>
 
 </div>
@@ -19500,7 +19161,7 @@ Epoch 00012: val_loss did not improve from 4.06752
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Test accuracy: 11.1244%
+<pre>Test accuracy: 5.8612%
 </pre>
 </div>
 </div>
@@ -20225,6 +19886,19 @@ test_{network} = bottleneck_features['test']</code></pre>
 </li>
 </ul>
 <p>I believe this architecture is suitable for this task, because the InceptionV3 network was already extremely good at identifying objects. Therefore, due to tranfer learning, it can be expected that, it will still do a decent job in distinguishing dog breeds. Thus, as a first test all we need to do is feed this output to a classifier i.e. an output layer with 133 classes, to obtain the different dog breeds. The global average pooling layer helps to reduce the number of features being fed to the classifiers. Further convolutional layers and/or DNN hidden layers should only be added if this initial model does not satify required accuracy. Turns out, this extra complication is not needed for us, here.</p>
+<p>One  of the reason why the CNN built by us in step 3 had rather low accuracy is that it was not deep enough, the depth being restricted by computational cost. At the same time even if we were somehow able to build a very deep CNN, training it will be hard due to the vanishing gradients problem. This was overcome in VGG16 and VGG19 through pre-training [1]. Thus using VGG19 bottleneck features, we see that we are able to attain a test accuray of 51.4% which is significantly larger than the ~13% acheived by our model in step 3. However, the Inception network is known to perform much better than VGG. This is because of following two reasons:</p>
+<ul>
+<li><p>The use of inception modules: In a conventional CNN, all the channels in a convolutional layer have same kernel size. This implies that the pattern captured by any channel in a convolutional layer has roughly the same spatial spread  On the otherhand in inception modules,  the input is passed  through 3 convolutional layers of having different kernel sizes: (1,1), (3,3) and (5,5). Their outputs are then concatenated together thereby forming the input for the next stage. This allows features having different scales to be extracted simultaneously.  They also pass the input through (1,1) convolutional layers before feeding thiem to the (3,3) and (5,5) layers. This helps implement feature reduction. All this results in a more efficient utilization of computing power. Thus allowing the construction of deeper models.</p>
+</li>
+<li><p>Addittion of auxiliary classifiers connected to intermediate layers:  helps to overcome the problem of vanishing gradients.</p>
+</li>
+</ul>
+<p>This allowed Inception architecture to be superior and yet more computational cost efficient than models such as VGG. This makes me believe that using pretrained weights from InceptionV3 will provide a better prediction for dog breeds.</p>
+<ul>
+<li><p>References</p>
+<p>1) <a href="https://www.pyimagesearch.com/2017/03/20/imagenet-vggnet-resnet-inception-xception-keras/">https://www.pyimagesearch.com/2017/03/20/imagenet-vggnet-resnet-inception-xception-keras/</a></p>
+</li>
+</ul>
 
 </div>
 </div>
@@ -20693,8 +20367,9 @@ Epoch 00005: val_loss did not improve from 0.65318
 <p>On the otherhand, I expected the predicitons for the dogs to be correct. It was indeed correct for Dachshund but predicted bulldog for the picture of a pug. In this respected, it slightly underperformed from my expectation. However, if we take into account that our model here had a test accuracy of ~80% which though high is not perfect, then it is not too bad that it predicted  'bulldog' for a pug. After all, pug and bulldog do look alike, so the prediction is not that bizzare either.</p>
 <p>The algorithm can be improved in the following ways:</p>
 <p>1) Using augmented data to train the model.</p>
-<p>2) Passing the bottle_neck features through more convolutional layers.</p>
-<p>3) Including one or more hidden layers in the DNN that is used to finally produce a prediction for dog breed.</p>
+<p>2) Passing the bottle_neck features through more convolutional layers. Also, including one or more hidden layers in the DNN that is used to finally produce a prediction for dog breed.</p>
+<p>3) Using <a href="https://arxiv.org/pdf/1302.4389.pdf">maxout activation</a></p>
+<p>4) Using <a href="https://www.dlology.com/blog/live-face-identification-with-pre-trained-vggface2-model/">batch-normalization</a> to improve training speed</p>
 
 </div>
 </div>
