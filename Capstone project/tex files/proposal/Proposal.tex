@@ -1,0 +1,362 @@
+\documentclass[letterpaper, 11pt]{article}
+%\pdfoutput=1
+
+%\usepackage[nocompress]{cite}
+\usepackage{datetime}
+\usepackage{jheppub}
+
+%\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath, amssymb}
+
+\usepackage{bm}
+%\usepackage{bbold}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{multirow} %package for putting different rows in different columns of a table
+\usepackage{longtable} %package to allow multipage tables
+
+\usepackage{romannum}%For roman numerals in the title
+
+\usepackage[makeroom]{cancel} %package for drwaing a cross mark on a term in a math expression
+
+
+\usepackage{dsfont}
+
+\usepackage{comment}
+
+%\usepackage[utf8]{inputenc}
+
+
+% remove later
+%\usepackage[us,12hr]{datetime} 
+
+
+%\DeclareUnicodeCharacter{2212}{-}
+
+\newcommand{\be}{\begin{eqnarray}}
+\newcommand{\ee}{\end{eqnarray}}
+\newcommand{\nn}{\nonumber}
+\newcommand{\bn}{\begin{enumerate}}
+\newcommand{\en}{\end{enumerate}}
+
+
+%%%%%%%%%%%%% Double line letters using amssymb %%%%%%%%%%%%%%%%
+
+\def\identity{{\rlap{1} \hskip 1.6pt \hbox{1}}}
+\def\iden{\identity}
+
+\def\IB{\mathbb{B}}
+\def\IC{\mathbb{C}}
+\def\ID{\mathbb{D}}
+\def\IH{\mathbb{H}}
+\def\IM{\mathbb{M}}
+\def\IN{\mathbb{N}}
+\def\IP{\mathbb{P}}
+\def\IR{\mathbb{R}}
+\def\IZ{\mathbb{Z}}
+
+%%%%%%%%%%%%%%%% Caligraphic letters %%%%%%%%%%%%%%%%%%
+
+\def\CA{{\cal A}}
+\def\CB{{\cal B}}
+\def\CC{{\cal C}}
+\def\CD{{\cal D}}
+\def\CE{{\cal E}}
+\def\CF{{\cal F}}
+\def\CG{{\cal G}}
+\def\CH{{\cal H}}
+\def\CI{{\cal I}}
+\def\CJ{{\cal J}}
+\def\CK{{\cal K}}
+\def\CL{{\cal L}}
+\def\CM{{\cal M}}
+\def\CN{{\cal N}}
+\def\CO{{\cal O}}
+\def\CP{{\cal P}}
+\def\CQ{{\cal Q}}
+\def\CR{{\cal R}}
+\def\CS{{\cal S}}
+\def\CT{{\cal T}}
+\def\CU{{\cal U}}
+\def\CV{{\cal V}}
+\def\CW{{\cal W}}
+\def\CX{{\cal X}}
+\def\CY{{\cal Y}}
+\def\CZ{{\cal Z}}
+
+%%%%%%%%%%%%%%%%%% Greek letters %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\a{\alpha}
+\def\b{\beta}
+\def\g{\gamma}
+\def\d{\delta}
+\def\e{\epsilon}
+\def\ve{\varepsilon}
+\def\z{\zeta}
+% eta
+\def\th{\theta}
+\def\vth{\vartheta}
+\def\i{\iota}
+\def\k{\kappa}
+\def\l{\lambda}
+\def\m{\mu}
+\def\n{\nu}
+% xi
+% o
+% pi
+\def\vp{\varpi}
+\def\r{\rho}
+\def\vr{\varrho}
+\def\s{\sigma}
+\def\vs{\varsigma}
+\def\t{\tau}
+\def\u{\upsilon}
+% phi
+\def\vph{\varphi}
+% chi
+\def\ch{\chi}
+% psi
+\def\w{\omega}
+%
+\def\G{\Gamma}
+\def\D{\Delta}
+\def\Th{\Theta}
+\def\L{\Lambda}
+% Xi
+% Pi
+\def\S{\Sigma}
+\def\Y{\Upsilon}
+% Phi
+% Psi
+\def\O{\Omega}
+
+
+%%%%%%%%%%%%%%%%% Mathematical Symbols %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\half{\frac{1}{2}}
+\def\thalf{{\textstyle \frac{1}{2}}}
+\def\imp{\Longrightarrow}
+\def\goto{\rightarrow}
+\def\para{\parallel}
+\def\vev#1{\langle #1 \rangle}
+\def\del{\nabla}
+\def\grad{\nabla}
+\def\curl{\nabla\times}
+\def\div{\nabla\cdot}
+\def\p{\partial}
+\newcommand{\bra}[1]{\langle{#1}|}
+\newcommand{\ket}[1]{|{#1}\rangle}
+\def\fslash{\displaystyle{\not}}
+
+%%%%%%%%%%%%%%%%%%%% Normal font in math %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\Tr{{\rm Tr}}
+\def\tr{{\rm Tr}}
+\def\det{{\rm det}}
+\def\fp{\mathfrak{p}}
+\def\fq{\mathfrak{q}}
+\def\PE{\textrm{PE}}
+
+\def\vec#1{\bm{#1}}
+
+\def\nn#1{\mathcal{N}=#1}
+%kazunobu
+
+
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+
+
+\def\IB{\mathbb{B}}
+\def\IC{\mathbb{C}}
+\def\ID{\mathbb{D}}
+\def\IH{\mathbb{H}}
+\def\IM{\mathbb{M}}
+\def\IN{\mathbb{N}}
+\def\IP{\mathbb{P}}
+\def\IR{\mathbb{R}}
+\def\IZ{\mathbb{Z}}
+
+%%%%%%%%%%%%%%%% Caligraphic letters %%%%%%%%%%%%%%%%%%
+
+\def\CA{{\cal A}} 
+\def\CB{{\cal B}}
+\def\CC{{\cal C}}
+\def\CD{{\cal D}}
+\def\CE{{\cal E}}
+\def\CF{{\cal F}}
+\def\CG{{\cal G}}
+\def\CH{{\cal H}}
+\def\CI{{\cal I}}
+\def\CJ{{\cal J}}
+\def\CK{{\cal K}}
+\def\CL{{\cal L}}
+\def\CM{{\cal M}}
+\def\CN{{\cal N}}
+\def\CO{{\cal O}}
+\def\CP{{\cal P}}
+\def\CQ{{\cal Q}}
+\def\CR{{\cal R}}
+\def\CS{{\cal S}}
+\def\CT{{\cal T}}
+\def\CU{{\cal U}}
+\def\CV{{\cal V}}
+\def\CW{{\cal W}}
+\def\CX{{\cal X}}
+\def\CY{{\cal Y}}
+\def\CZ{{\cal Z}}
+
+%%%%%%%%%%%%%%%%%% Greek letters %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\a{\alpha}
+\def\b{\beta}
+\def\g{\gamma}
+\def\d{\delta}
+\def\e{\epsilon}
+\def\ve{\varepsilon}
+\def\z{\zeta}
+% eta
+\def\th{\theta}
+\def\vth{\vartheta}
+\def\i{\iota}
+\def\k{\kappa}
+\def\l{\lambda}
+\def\m{\mu}
+\def\n{\nu}
+% xi
+% o
+% pi
+\def\vp{\varpi}
+\def\r{\rho}
+\def\vr{\varrho}
+\def\s{\sigma}
+\def\vs{\varsigma}
+\def\t{\tau}
+\def\u{\upsilon}
+% phi
+\def\vph{\varphi}
+% chi
+\def\ch{\chi}
+% psi
+\def\w{\omega}
+%
+\def\G{\Gamma}
+\def\D{\Delta}
+\def\Th{\Theta}
+\def\L{\Lambda}
+% Xi
+% Pi
+\def\S{\Sigma}
+\def\Y{\Upsilon}
+% Phi
+% Psi
+\def\O{\Omega}
+
+
+%%%%%%%%%%%%%%%%% Mathematical Symbols %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\half{\frac{1}{2}}
+\def\imp{\Longrightarrow}
+\def\goto{\rightarrow}
+\def\para{\parallel}
+\def\vev#1{\langle #1 \rangle}
+\def\del{\nabla}
+\def\p{\partial}
+
+\def\ft{\mathfrak{t}}
+
+%%%%%%%%%%%%%%%%%%%% Normal font in math %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\Tr{{\rm Tr}}
+\def\tr{{\rm Tr}}
+\def\det{{\rm det}}
+\def\PE{{\rm PE}}
+
+\allowdisplaybreaks
+
+%%%%%%%%%%%%%%%%%%%%%%% To increase the spacing between the rows of a table by a factor of 1.4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\arraystretch}{1.4}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\title{The full $\mathcal{N}=2$ superconformal index of Minahan-Nemeschansky's $E_7$ theory}
+\title{Capstone Proposal - Machine Learning Engineer Nanodegree}
+
+\author{Prarit Agarwal \\ \today}
+
+
+
+\begin{document}
+\maketitle
+\section{Introduction and Domain Background} \label{DB}
+
+This proposal is based on the \href{https://www.kaggle.com/c/champs-scalar-coupling}{Kaggle competition} called ``Predicting Molecular Properties'' \cite{CHAMPS} hosted by the CHemistry and Mathematics in Phase Space (CHAMPS) group of researchers. The aim is to develop an algorithm to predict strength of interatomic interactions called 'scalar couplings' in any given molecule. The knowledge of such scalar couplings is highly sought after and is extremely helpful in understanding the physical and chemical properties of these molecules \cite{HANSEN1981175}. In principle, it is possible to solve these scalar couplings through quantum mechanical computations. These computations involve solving the Schrondinger's equation for a 'many-body-system', a problem that is known to be hard and time consuming owing to its computational intensiveness. At the same time, the scalar couplings are highly constrained by the requirement of invariance under translation and rotation of the molecule. It therefore follows that they can only depend upon interatomic distances, the relative orientation of the atoms and the overall geometry of the molecule along with the different physical properties of the atoms themselves. It therefore follows that it should be possible to develop numerical models for these couplings which would greatly enhance our computational ability without a significant loss in precision when compared to an honest 'quantum mechanical computation'. This is also evident from the fact that chemist have already developed a reliable set of rules (for e.g. see \cite{Reich} and \cite{Rubin}) which can be used to predict the coupling constants as long as the required precision is not too high. However, in applications such those in the pharmaceutical industry and material science, one often desires a higher precision than might be possible using these rules. 
+%Clearly, a better model will of great help. 
+Given the nature of the problem above, it is therefore natural to try to apply machine learning tools to this area and see if one can develop better models with more precise predictions. 
+
+\section{Problem Statement}
+The CHAMPS group has provided explicit interatomic scalar couplings for 85003 molecules along with information about their 3d molecular structure. Using these to train models, one then has to make predictions for 45772 new molecules. Given that these scalar couplings can in principle take any real value, this is clearly a regression task. As is the case with any regression task, the goodness of the solution can be easily quantified in terms of the error. Additionally, if desired, one can also use the $R_2$-score to gauge the predictability of the model.
+
+\section{Datasets and Inputs}
+The dataset provided by the CHAMPS group is publicly available through this \href{https://www.kaggle.com/c/champs-scalar-coupling/data}{link}. As mentioned in the previous section, it consists of a training set with 85003 molecules and a test set consisting of 45772 other molecules. It has also been ensured that there is no overlap between the training and the test set. For all these molecules, CHAMPS has also provided the spatial coordinates for all the atoms in each molecule. This is to be treated as the only input to the models. 
+
+CHAMPS has also provided additional data namely, \textit{dipole moments}, \textit{magnetic shielding tensors}, \textit{mulliken charges}, \textit{potential energy} and \textit{scalar coupling contributions} for the molecules in the training set only. This data is not available for the molecules in the test set. Thus, if one intends to use this information, then they will have to separately model them first and then use them as meta-features for the molecules in the test set. 
+
+Additionally, the scalar couplings to be predicted are of 8 distinct types: 1JHC, 1JHN, 2JHC, 2JHN, 2JHH, 3JHC, 3JHN, 3JHH. This information is also provided explicitly for both the training and test molecules. The values for scalar couplings of each type seem to have slightly distributions.
+
+\section{Solution Statement}   
+
+Given that the explicit values for the scalar couplings of different types have different distributions, I propose to train an individual model for each type. I also wish to use neural networks to create my models. As mentioned in section \ref{DB}, translational and rotational invariance requires that the molecular properties should only depend upon the interatomic distances and angles. This can easily be extracted given the spatial coordinates of all the atoms in each molecules. Having done this, I will feed this information into my model and train them appropriately, using regularization techniques such as  batch-normalization, dropout and early stopping.
+
+At the same time, we wish to apply ensembling techniques to improve my predictions. To this end, for each type of scalar coupling, I will train a couple of different neural networks (with different configurations/hyper-parameters) and take the weighted average of their predictions as my final prediction. The weights to be applied to each individual model will be based on their 
+$R_2$-score for the validation set i.e. the predictions from the model with a higher $R_2$-score will be given a proportionately higher weight.
+
+\section{Benchmark Model} \label{benchmark}
+
+A benchmark model has already been suggested by the competition sponsors. This can be found \href{https://www.kaggle.com/inversion/atomic-distance-benchmark/}{here}. It is based on engineering a single feature i.e. the distance vector between the atoms involved in the coupling. 
+
+\section{Evaluation Metric} 
+
+As mentioned  \href{https://www.kaggle.com/c/champs-scalar-coupling/overview/evaluation}{here}, submission are evaluated based on the log of the mean absolute error for each scalar coupling type type, which is then averages over all types. More explicitly, it is given by 
+\be
+\text{score} = \frac{1}{T} \sum_{t=1}^{T} \log \Bigg( \frac{1}{n_t} \sum_{i=1}^{n_t} |y_i-\hat{y}_i| \Bigg)
+\ee 
+where $t$ runs over the different types of scalar couplings, $i$ runs over the number of instances in the corresponding type and
+\begin{itemize}
+	\item $T$ = number of different scalar coupling types
+	\item $n_t$ = number of instances of type $t$ 
+	\item $y_i$ = prediction for the $i$-th instance
+	\item $\hat{y}_i$ =  true value for the i-th instance
+\end{itemize}
+
+\section{Project Design}
+
+The project will proceed according to the following workflow:
+
+\begin{enumerate} 
+	\item EDA: A preliminary analysis of the data
+	\item Feature Engineering: Use the spatial coordinates of the atoms to extract their relative distance and spatial orientation
+	\item Benchmarking: Train the benchmark model mentioned in section \ref{benchmark} to establish a baseline. 
+	\item Modeling: For each type of scalar coupling, construct several different DNNs that attempt to the predict the scalar coupling constants. These models will differ from each other in the number of their hidden layers, type of regularization techniques (such as batch-normalization vs dropout) etc. We will also use early stopping to prevent overfitting the training set. 
+	\item Ensembling: Having developed a couple of different models for each type, we will take a weighted average of their predictions to obtain our final predictions. 
+	\item Submission: We will then use our model to predict the scalar couplings for the test set provided by CHAMPS and submit these to Kaggle to obtain a final evaluation and score.	
+\end{enumerate}
+
+
+
+
+
+
+\bibliographystyle{jhep}
+\bibliography{ADN1}
+
+
+
+\end{document}
+

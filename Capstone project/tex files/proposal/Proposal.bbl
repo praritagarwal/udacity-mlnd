@@ -1,0 +1,20 @@
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{1}
+
+\bibitem{CHAMPS}
+CHAMPS-Kaggle, ``{Predicting Molecular Properties}.''
+  \url{https://www.kaggle.com/c/champs-scalar-coupling}.
+
+\bibitem{HANSEN1981175}
+P.~E. Hansen, \emph{Carbon—hydrogen spin—spin coupling constants},
+  \href{http://dx.doi.org/https://doi.org/10.1016/0079-6565(81)80001-5}{\emph{Progress
+  in Nuclear Magnetic Resonance Spectroscopy} {\bf 14} (1981) 175 -- 295}.
+
+\bibitem{Reich}
+H.~J. Reich, ``{Spin-Spin Splitting: J-Coupling}.''
+  \url{https://www.chem.wisc.edu/areas/reich/nmr/05-hmr-03-jcoupl.htm/}.
+
+\bibitem{Rubin}
+Y.~Rubin, ``{Coupling constants for ${}^1$H and ${}^{13}$C NMR}.''
+  \url{https://yvesrubin.files.wordpress.com/2011/03/coupling-constants-for-1h-and-13c-nmr.pdf}.
+
+\end{thebibliography}\endgroup
