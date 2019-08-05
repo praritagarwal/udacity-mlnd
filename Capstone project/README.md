@@ -20,7 +20,9 @@ test.csv  --> test_sample.csv
 
 structures.csv --> structures_sample.csv
 
-# Project Files 
+# Jupyter Notebooks 
 
-- predicting_scalar_coupling_II.ipynb
+- interatomic_distances.ipynb : The structures_sample.csv file contains the (x, y, z) position coordinates of each atom in all the molecules. In this notebook we use this data to obtain distances between all possible atomic pairs in a molecules. This is saved to a new file called  CHAMPS_rel_pos.csv
+
+- predicting_scalar_coupling_II.ipynb : This notebook contains our main implementation. 
 
