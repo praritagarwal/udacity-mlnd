@@ -24,7 +24,7 @@ structures.csv --> structures_sample.csv
 
 - interatomic_distances.ipynb : The structures_sample.csv file contains the (x, y, z) position coordinates of each atom in all the molecules. In this notebook we use this data to obtain distances between all possible atomic pairs in a molecules. This is saved to a new file called  CHAMPS_rel_pos.csv
 
-- nearest_neighbors.ipynb : In this notebook, we compute the distances to 3 nearest neighbors of each kind (i.e. C, H, N, O). This data is stored in appropriate files in the subfolder 'sample_data'
+- nearest_neighbors.ipynb : In this notebook, we compute the distances to 3 nearest neighbors of each kind (i.e. C, H, N, O). This data is stored in appropriate files in the subfolder 'sample_data'. This notebook takes a long time to execute. Even on such a small sample data as provided by us, it needs about 15 min for execution. 
 
 - predicting_scalar_coupling_II.ipynb : This notebook contains our main implementation.  It reads the files in 'sample_data' and engineers various features. These are then fed to a variety of neural networks. The training weights of these neural networks are saved in a subfolder called 'SavedModels'. The predictions produced by the trained neural networks are stored in a subfolder called 'predictions_v2'. The final submission for Kaggle are stored in the subfolder called 'sample_submissions'.
 
