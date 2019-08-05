@@ -15,6 +15,8 @@ The original data can be downloaded from [here](https://www.kaggle.com/c/champs-
 Our jupyter notebooks have been configured to run on the sample files we have provided. In order to run them on the original data, it is easiest to download the orginal data from the link provided above and replace our sample files with original data. Also, rename the original files as follows
 
 train.csv --> train_sample.csv
+
 test.csv  --> test_sample.csv
+
 structures.csv --> structures_sample.csv
 
