@@ -1,2 +1,0 @@
-UDACITY-MLND-Capstone Project
-
