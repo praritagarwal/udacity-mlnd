@@ -20,3 +20,7 @@ test.csv  --> test_sample.csv
 
 structures.csv --> structures_sample.csv
 
+# Project Files 
+
+- predicting_scalar_coupling_II.ipynb
+
