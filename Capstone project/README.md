@@ -22,6 +22,8 @@ structures.csv --> structures_sample.csv
 
 # Jupyter Notebooks 
 
+Please run the following 3 notebooks in the order given here i.e. interatomic_distances.ipynb --> nearest_neighbors.ipynb --> predicting_scalar_coupling_II.ipynb
+
 - interatomic_distances.ipynb : The structures_sample.csv file contains the (x, y, z) position coordinates of each atom in all the molecules. In this notebook we use this data to obtain distances between all possible atomic pairs in a molecules. This is saved to a new file called  CHAMPS_rel_pos.csv. It takes less than a minute to  execute on our sample data. 
 
 - nearest_neighbors.ipynb : In this notebook, we compute the distances to 3 nearest neighbors of each kind (i.e. C, H, N, O). This data is stored in appropriate files in the subfolder 'sample_data'. This notebook takes a long time to execute. Even on such a small sample data as provided by us, it needs about 15 min for execution. 
